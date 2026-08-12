@@ -15,8 +15,8 @@ const PROOFS = [
   {
     index: 'MASK',
     label: 'The silhouette',
-    title: 'See through white eyes.',
-    body: 'A sharp, unmistakable mask profile leads every angle. No generic superhero language. No borrowed costume shape.',
+    title: 'The eyes see first.',
+    body: 'Wide white lenses, a sharp brow, and web lines pulled around the face make the silhouette unmistakably Spider-Man.',
   },
   {
     index: 'WEB',
@@ -44,14 +44,34 @@ function SpiderStamp() {
 function MaskProof() {
   return (
     <svg className="proof-graphic proof-graphic--mask" viewBox="0 0 600 600" aria-hidden="true">
-      <rect width="600" height="600" />
-      <path className="mask-proof__head" d="M151 239C163 97 239 35 300 35s137 62 149 204c12 142-68 282-149 309-81-27-161-167-149-309Z" />
-      <g className="mask-proof__web">
-        <path d="M300 39v503M170 161c89 57 171 57 260 0M152 259c105 62 191 62 296 0M168 369c92 56 172 56 264 0M217 471c57 32 109 32 166 0" />
-        <path d="M300 39C225 133 181 230 157 327M300 39c75 94 119 191 143 288M300 39c-35 128-52 292-43 478M300 39c35 128 52 292 43 478" />
+      <defs>
+        <clipPath id="mask-proof-clip">
+          <path d="M300 10C162 10 82 119 92 292c10 159 88 282 208 338 120-56 198-179 208-338C518 119 438 10 300 10Z" />
+        </clipPath>
+      </defs>
+      <rect className="mask-proof__backdrop" width="600" height="600" />
+      <g className="mask-proof__sense" fill="none">
+        <path d="M45 298C45 141 159 23 300 23S555 141 555 298" />
+        <path d="M18 298C18 126 145-5 300-5s282 131 282 303" />
       </g>
-      <path className="mask-proof__eye" d="M190 226c16-67 51-116 86-139-5 89-31 148-80 188Z" />
-      <path className="mask-proof__eye" d="M410 226c-16-67-51-116-86-139 5 89 31 148 80 188Z" />
+      <path className="mask-proof__head" d="M300 10C162 10 82 119 92 292c10 159 88 282 208 338 120-56 198-179 208-338C518 119 438 10 300 10Z" />
+      <g className="mask-proof__planes" clipPath="url(#mask-proof-clip)">
+        <path d="M82 304 151 190l80 342L88 486Z" />
+        <path d="m518 304-69-114-80 342 143-46Z" />
+      </g>
+      <g className="mask-proof__web" clipPath="url(#mask-proof-clip)" fill="none">
+        <path pathLength="1" d="M300-20v650M300-20C208 94 142 215 92 390M300-20c92 114 158 235 208 410M300-20C243 140 221 331 217 598M300-20c57 160 79 351 83 618" />
+        <path pathLength="1" d="M92 158Q300 292 508 158M81 274Q300 398 519 274M104 404Q300 504 496 404M151 520Q300 579 449 520" />
+      </g>
+      <path className="mask-proof__socket" d="M114 214c49-88 117-126 171-111-17 101-67 185-154 225-20-35-26-76-17-114Z" />
+      <path className="mask-proof__socket" d="M486 214c-49-88-117-126-171-111 17 101 67 185 154 225 20-35 26-76 17-114Z" />
+      <path className="mask-proof__eye" d="M145 222c35-57 77-88 115-96-17 68-53 121-108 157-8-20-11-41-7-61Z" />
+      <path className="mask-proof__eye" d="M455 222c-35-57-77-88-115-96 17 68 53 121 108 157 8-20 11-41 7-61Z" />
+      <path className="mask-proof__bridge" d="M276 105 300 69l24 36-24 83Z" />
+      <g className="mask-proof__emblem">
+        <ellipse cx="300" cy="475" rx="13" ry="27" />
+        <path d="m290 460-41-30m40 47-51-7m54 22-44 32m62-64 41-30m-40 47 51-7m-54 22 44 32" />
+      </g>
     </svg>
   )
 }
@@ -194,8 +214,13 @@ export function DropExperience() {
 
       const panels = gsap.utils.toArray<HTMLElement>('.proofs__panel')
       const visuals = gsap.utils.toArray<HTMLElement>('.proofs__visual-card')
+      const powerTabs = gsap.utils.toArray<HTMLElement>('.proofs__power-tab')
       gsap.set(panels.slice(1), { opacity: 0, y: 44 })
       gsap.set(visuals.slice(1), { opacity: 0, xPercent: 18, rotate: 4 })
+      gsap.set(powerTabs, { flexGrow: 0.7, opacity: 0.42 })
+      gsap.set(powerTabs[0], { flexGrow: 2.2, opacity: 1 })
+      gsap.set('.mask-proof__web path', { strokeDasharray: 1, strokeDashoffset: 1 })
+      gsap.set('.mask-proof__eye', { scale: 0.82, transformOrigin: 'center' })
 
       const proofTimeline = gsap.timeline({
         scrollTrigger: {
@@ -206,14 +231,20 @@ export function DropExperience() {
         },
       })
       proofTimeline
+        .to('.mask-proof__web path', { strokeDashoffset: 0, duration: 0.58, stagger: 0.06 }, 0)
+        .to('.mask-proof__eye', { scale: 1, duration: 0.48, ease: 'expo.out' }, 0.04)
         .to('.proofs__progress-fill', { scaleX: 0.5, duration: 1 }, 0)
         .to(panels[0], { opacity: 0, y: -38, duration: 0.28 }, 0.66)
         .to(visuals[0], { opacity: 0, xPercent: -16, rotate: -3, duration: 0.32 }, 0.64)
+        .to(powerTabs[0], { flexGrow: 0.7, opacity: 0.42, duration: 0.24 }, 0.64)
+        .to(powerTabs[1], { flexGrow: 2.2, opacity: 1, duration: 0.3 }, 0.67)
         .to(panels[1], { opacity: 1, y: 0, duration: 0.3 }, 0.73)
         .to(visuals[1], { opacity: 1, xPercent: 0, rotate: -2, duration: 0.36 }, 0.7)
         .to('.proofs__progress-fill', { scaleX: 0.75, duration: 1 }, 1)
         .to(panels[1], { opacity: 0, y: -38, duration: 0.28 }, 1.66)
         .to(visuals[1], { opacity: 0, xPercent: -16, rotate: -6, duration: 0.32 }, 1.64)
+        .to(powerTabs[1], { flexGrow: 0.7, opacity: 0.42, duration: 0.24 }, 1.64)
+        .to(powerTabs[2], { flexGrow: 2.2, opacity: 1, duration: 0.3 }, 1.67)
         .to(panels[2], { opacity: 1, y: 0, duration: 0.3 }, 1.73)
         .to(visuals[2], { opacity: 1, xPercent: 0, rotate: 2, duration: 0.36 }, 1.7)
         .to('.proofs__progress-fill', { scaleX: 1, duration: 1 }, 2)
@@ -281,7 +312,7 @@ export function DropExperience() {
         </button>
       </nav>
 
-      <section className="drop-hero" id="top" aria-labelledby="drop-hook">
+      <section className="drop-hero" id="top" aria-labelledby="drop-hook" data-world-tone="red" data-world-origin="right">
         <div className="drop-hero__stage">
           <div className="drop-hero__issue" data-drop-intro>
             <span>Spider-Man × Digitivia</span>
@@ -343,7 +374,7 @@ export function DropExperience() {
         </div>
       </div>
 
-      <section className="product-intro" id="product" aria-labelledby="product-title" data-world-tone="light">
+      <section className="product-intro" id="product" aria-labelledby="product-title" data-world-tone="light" data-world-origin="right">
         <SpiderEyes className="product-intro__eyes" />
         <div className="product-intro__index" data-drop-reveal>Built in the Spider-Man silhouette</div>
         <div className="product-intro__copy">
@@ -357,7 +388,7 @@ export function DropExperience() {
         </div>
       </section>
 
-      <section className="proofs" aria-labelledby="proofs-title" data-world-tone="dark">
+      <section className="proofs" aria-labelledby="proofs-title" data-world-tone="dark" data-world-origin="left">
         <div className="proofs__stage">
           <div className="proofs__topline">
             <p id="proofs-title">Three powers. One Spider-Man world.</p>
@@ -367,6 +398,9 @@ export function DropExperience() {
             <div className="proofs__visual-card" data-spider-react><MaskProof /></div>
             <div className="proofs__visual-card" data-spider-react><WebProof /></div>
             <div className="proofs__visual-card" data-spider-react><SignalProof /></div>
+            <div className="proofs__power-rail">
+              {PROOFS.map((proof) => <span className="proofs__power-tab" key={proof.index}>{proof.index}</span>)}
+            </div>
           </div>
           <div className="proofs__copy">
             {PROOFS.map((proof) => (
@@ -381,7 +415,7 @@ export function DropExperience() {
         </div>
       </section>
 
-      <section className="identity" id="identity" aria-labelledby="identity-title" data-world-tone="red">
+      <section className="identity" id="identity" aria-labelledby="identity-title" data-world-tone="red" data-world-origin="center">
         <SpiderEyes className="identity__eyes" />
         <p className="identity__eyebrow" data-drop-reveal>Digitivia turns the signal on</p>
         <h2 className="identity__headline" id="identity-title">
@@ -400,7 +434,7 @@ export function DropExperience() {
         </div>
       </section>
 
-      <section className="reserve-new" id="reserve" aria-labelledby="reserve-new-title" data-world-tone="light">
+      <section className="reserve-new" id="reserve" aria-labelledby="reserve-new-title" data-world-tone="light" data-world-origin="right">
         <SpiderEyes className="reserve-new__eyes" />
         <div className="reserve-new__header">
           <p data-drop-reveal>Five sizes. Five hundred suits.</p>
@@ -445,7 +479,7 @@ export function DropExperience() {
         </div>
       </section>
 
-      <footer className="drop-footer" data-world-tone="dark">
+      <footer className="drop-footer" data-world-tone="dark" data-world-origin="left">
         <SpiderEyes className="drop-footer__eyes" />
         <p>The suit is the object.<br />Digitivia builds the world around it.</p>
         <a href="https://digitivia.com" target="_blank" rel="noopener noreferrer">Digitivia</a>

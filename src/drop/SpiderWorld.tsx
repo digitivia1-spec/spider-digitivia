@@ -2,9 +2,10 @@ import { useEffect, useRef } from 'react'
 import type { RefObject } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import './SpiderWorld.css'
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin)
 
 type SpiderWorldProps = {
   scopeRef: RefObject<HTMLElement | null>
@@ -15,8 +16,10 @@ type WebPoint = {
   baseY: number
   x: number
   y: number
-  column: number
-  row: number
+  spoke: number
+  ring: number
+  angle: number
+  radius: number
 }
 
 type Pulse = {
@@ -31,6 +34,14 @@ const TONES = {
   light: ['rgba(8, 25, 58, 0.19)', 'rgba(215, 22, 38, 0.34)'],
   red: ['rgba(255, 239, 222, 0.28)', 'rgba(10, 25, 58, 0.34)'],
 } as const
+
+type WorldOrigin = 'left' | 'center' | 'right'
+
+const ORIGINS: Record<WorldOrigin, [number, number]> = {
+  left: [0.16, 0.42],
+  center: [0.5, 0.46],
+  right: [0.84, 0.36],
+}
 
 function SpiderFigure() {
   return (
@@ -94,8 +105,8 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
     let width = window.innerWidth
     let height = window.innerHeight
     let dpr = Math.min(window.devicePixelRatio || 1, 1.5)
-    let columns = width < 600 ? 7 : 11
-    let rows = width < 600 ? 12 : 9
+    let spokes = width < 600 ? 12 : 18
+    let rings = width < 600 ? 7 : 9
     let points: WebPoint[] = []
     let pulses: Pulse[] = []
     let frame = 0
@@ -104,19 +115,23 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
     let scrollVelocity = 0
     let hoverForce = 0
     let tone: keyof typeof TONES = 'dark'
+    let origin: WorldOrigin = 'right'
     let interactionTimer = 0
+    let pointerTimer = 0
+    const webCenter = { x: width * ORIGINS[origin][0], y: height * ORIGINS[origin][1] }
+    const webTarget = { ...webCenter }
     const pointer = { x: width * 0.5, y: height * 0.5, active: false }
 
     const buildPoints = () => {
       points = []
-      const xGap = width / Math.max(1, columns - 1)
-      const yGap = height / Math.max(1, rows - 1)
-      for (let row = 0; row < rows; row += 1) {
-        for (let column = 0; column < columns; column += 1) {
-          const offset = row % 2 === 0 ? 0 : xGap * 0.34
-          const baseX = column * xGap + offset - xGap * 0.18
-          const baseY = row * yGap
-          points.push({ baseX, baseY, x: baseX, y: baseY, column, row })
+      const maxRadius = Math.hypot(width, height) * 0.76
+      for (let ring = 0; ring < rings; ring += 1) {
+        const radius = ((ring + 1) / rings) * maxRadius
+        for (let spoke = 0; spoke < spokes; spoke += 1) {
+          const angle = (Math.PI * 2 * spoke) / spokes - Math.PI / 2
+          const baseX = webCenter.x + Math.cos(angle) * radius
+          const baseY = webCenter.y + Math.sin(angle) * radius
+          points.push({ baseX, baseY, x: baseX, y: baseY, spoke, ring, angle, radius })
         }
       }
     }
@@ -125,8 +140,12 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       width = window.innerWidth
       height = window.innerHeight
       dpr = Math.min(window.devicePixelRatio || 1, 1.5)
-      columns = width < 600 ? 7 : 11
-      rows = width < 600 ? 12 : 9
+      spokes = width < 600 ? 12 : 18
+      rings = width < 600 ? 7 : 9
+      webCenter.x = width * ORIGINS[origin][0]
+      webCenter.y = height * ORIGINS[origin][1]
+      webTarget.x = webCenter.x
+      webTarget.y = webCenter.y
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
       canvas.style.width = `${width}px`
@@ -135,14 +154,21 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       buildPoints()
     }
 
-    const getPoint = (column: number, row: number) => points.find((point) => point.column === column && point.row === row)
+    const getPoint = (spoke: number, ring: number) => points.find((point) => point.spoke === (spoke + spokes) % spokes && point.ring === ring)
 
     const detectTone = () => {
-      const center = document.elementFromPoint(width * 0.5, height * 0.5)?.closest<HTMLElement>('[data-world-tone]')
+      const center = document.elementFromPoint(width * 0.5, height * 0.5)?.closest<HTMLElement>('[data-world-tone], [data-world-origin]')
       const next = center?.dataset.worldTone
       if (next === 'light' || next === 'red' || next === 'dark') {
         tone = next
         world.dataset.tone = next
+      }
+      const nextOrigin = center?.dataset.worldOrigin
+      if (nextOrigin === 'left' || nextOrigin === 'center' || nextOrigin === 'right') {
+        origin = nextOrigin
+        world.dataset.origin = nextOrigin
+        webTarget.x = width * ORIGINS[nextOrigin][0]
+        webTarget.y = height * ORIGINS[nextOrigin][1]
       }
     }
 
@@ -160,39 +186,82 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       context.clearRect(0, 0, width, height)
       scrollVelocity *= 0.91
       hoverForce += ((pointer.active ? 1 : 0) - hoverForce) * 0.08
+      webCenter.x += (webTarget.x - webCenter.x) * 0.045
+      webCenter.y += (webTarget.y - webCenter.y) * 0.045
       const [webColor, signalColor] = TONES[tone]
       const influence = Math.min(width, height) * (width < 600 ? 0.34 : 0.28)
+      const tension = Math.min(1, Math.abs(scrollVelocity) / 90)
+      const twist = scrollVelocity * 0.0012
 
       for (const point of points) {
+        const ringRatio = (point.ring + 1) / rings
+        const livingAngle = point.angle + twist * ringRatio + Math.sin(time * 0.00045 + point.ring * 0.7) * 0.008
+        point.baseX = webCenter.x + Math.cos(livingAngle) * point.radius * (1 + tension * 0.04)
+        point.baseY = webCenter.y + Math.sin(livingAngle) * point.radius * (1 - tension * 0.035)
         const dx = point.baseX - pointer.x
         const dy = point.baseY - pointer.y
         const distance = Math.max(1, Math.hypot(dx, dy))
         const pull = pointer.active ? Math.max(0, 1 - distance / influence) : 0
-        const scrollWave = Math.sin(point.row * 0.72 + point.column * 0.48 + time * 0.0014) * Math.min(22, Math.abs(scrollVelocity) * 0.08)
-        const targetX = point.baseX + (dx / distance) * pull * -34 * hoverForce + scrollWave
-        const targetY = point.baseY + (dy / distance) * pull * -26 * hoverForce + scrollVelocity * 0.022
-        point.x += (targetX - point.x) * Math.min(1, delta * 0.008)
-        point.y += (targetY - point.y) * Math.min(1, delta * 0.008)
+        const scrollWave = Math.sin(point.ring * 0.82 + point.spoke * 0.56 + time * 0.0012) * Math.min(18, Math.abs(scrollVelocity) * 0.065)
+        const targetX = point.baseX + (dx / distance) * pull * -44 * hoverForce + scrollWave
+        const targetY = point.baseY + (dy / distance) * pull * -34 * hoverForce + scrollVelocity * 0.014 * ringRatio
+        point.x += (targetX - point.x) * Math.min(1, delta * 0.009)
+        point.y += (targetY - point.y) * Math.min(1, delta * 0.009)
       }
 
-      context.lineWidth = width < 600 ? 0.75 : 1
+      context.lineWidth = width < 600 ? 0.85 : 1.1
       context.strokeStyle = webColor
       context.beginPath()
-      for (const point of points) {
-        const right = getPoint(point.column + 1, point.row)
-        const below = getPoint(point.column, point.row + 1)
-        const diagonal = getPoint(point.column + (point.row % 2 === 0 ? 0 : 1), point.row + 1)
-        for (const neighbor of [right, below, diagonal]) {
-          if (!neighbor) continue
+      for (let spoke = 0; spoke < spokes; spoke += 1) {
+        const first = getPoint(spoke, 0)
+        if (first) {
+          context.moveTo(webCenter.x, webCenter.y)
+          context.lineTo(first.x, first.y)
+        }
+        for (let ring = 0; ring < rings - 1; ring += 1) {
+          const point = getPoint(spoke, ring)
+          const outward = getPoint(spoke, ring + 1)
+          if (!point || !outward) continue
           context.moveTo(point.x, point.y)
-          context.lineTo(neighbor.x, neighbor.y)
+          context.lineTo(outward.x, outward.y)
         }
       }
       context.stroke()
 
+      context.beginPath()
+      for (let ring = 0; ring < rings; ring += 1) {
+        for (let spoke = 0; spoke < spokes; spoke += 1) {
+          const point = getPoint(spoke, ring)
+          const next = getPoint(spoke + 1, ring)
+          if (!point || !next) continue
+          const middleX = (point.x + next.x) * 0.5
+          const middleY = (point.y + next.y) * 0.5
+          const toCenterX = webCenter.x - middleX
+          const toCenterY = webCenter.y - middleY
+          const sag = 0.12 + ring * 0.006
+          context.moveTo(point.x, point.y)
+          context.quadraticCurveTo(middleX + toCenterX * sag, middleY + toCenterY * sag, next.x, next.y)
+        }
+      }
+      context.stroke()
+
+      context.globalAlpha = 0.68
+      context.strokeStyle = signalColor
+      context.lineWidth = width < 600 ? 1.15 : 1.5
+      context.beginPath()
+      for (let spoke = 0; spoke < spokes; spoke += 4) {
+        const outer = getPoint(spoke, rings - 1)
+        if (!outer) continue
+        context.moveTo(webCenter.x, webCenter.y)
+        context.lineTo(outer.x, outer.y)
+      }
+      context.stroke()
+      context.globalAlpha = 1
+
       context.fillStyle = signalColor
       for (const point of points) {
-        const radius = pointer.active && Math.hypot(point.x - pointer.x, point.y - pointer.y) < influence ? 1.8 : 0.9
+        if (point.ring % 2 !== 0 && point.spoke % 2 !== 0) continue
+        const radius = pointer.active && Math.hypot(point.x - pointer.x, point.y - pointer.y) < influence ? 1.9 : 0.75
         context.beginPath()
         context.arc(point.x, point.y, radius, 0, Math.PI * 2)
         context.fill()
@@ -205,21 +274,30 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
         context.globalAlpha = Math.max(0, pulse.life)
         context.strokeStyle = signalColor
         context.lineWidth = 2
-        context.beginPath()
-        context.arc(pulse.x, pulse.y, pulse.radius, 0, Math.PI * 2)
-        context.stroke()
-        for (let spoke = 0; spoke < 8; spoke += 1) {
-          const angle = (Math.PI * 2 * spoke) / 8
+        for (let band = 0; band < 3; band += 1) {
+          const radius = pulse.radius - band * 18
+          if (radius <= 0) continue
+          context.beginPath()
+          context.arc(pulse.x, pulse.y, radius, 0, Math.PI * 2)
+          context.stroke()
+        }
+        for (let spoke = 0; spoke < 12; spoke += 1) {
+          const angle = (Math.PI * 2 * spoke) / 12
           context.beginPath()
           context.moveTo(pulse.x + Math.cos(angle) * pulse.radius * 0.38, pulse.y + Math.sin(angle) * pulse.radius * 0.38)
           context.lineTo(pulse.x + Math.cos(angle) * pulse.radius, pulse.y + Math.sin(angle) * pulse.radius)
           context.stroke()
         }
+        context.beginPath()
+        context.moveTo(pulse.x, pulse.y)
+        context.quadraticCurveTo((pulse.x + webCenter.x) * 0.5, Math.min(pulse.y, webCenter.y) - 42, webCenter.x, webCenter.y)
+        context.stroke()
         context.globalAlpha = 1
       }
 
       world.style.setProperty('--sense-x', `${pointer.x}px`)
       world.style.setProperty('--sense-y', `${pointer.y}px`)
+      world.style.setProperty('--web-tension', tension.toFixed(3))
       if (!reduced) frame = window.requestAnimationFrame(draw)
     }
 
@@ -227,6 +305,10 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       pointer.x = event.clientX
       pointer.y = event.clientY
       pointer.active = true
+      if (event.pointerType !== 'mouse') {
+        window.clearTimeout(pointerTimer)
+        pointerTimer = window.setTimeout(() => { pointer.active = false }, 900)
+      }
     }
 
     const onPointerDown = (event: PointerEvent) => {
@@ -235,7 +317,14 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       pointer.active = true
       pulses.push({ x: event.clientX, y: event.clientY, radius: 8, life: 1 })
       setInteraction('touch')
-      gsap.fromTo(figure, { scale: 0.84, rotate: '-=8' }, { scale: 1, rotate: '+=8', duration: 0.62, ease: 'elastic.out(1, 0.42)', overwrite: 'auto' })
+      window.clearTimeout(pointerTimer)
+      pointerTimer = window.setTimeout(() => { pointer.active = false }, 1200)
+      gsap.fromTo(figure, { scale: 0.86 }, { scale: 1, duration: 0.58, ease: 'expo.out', overwrite: 'auto' })
+      const reactiveTarget = (event.target as Element | null)?.closest('[data-spider-react]')
+      const reactiveEyes = reactiveTarget?.querySelectorAll('.mask-proof__eye')
+      if (reactiveEyes?.length) {
+        gsap.timeline().to(reactiveEyes, { scale: 1.08, duration: 0.18, ease: 'expo.out' }).to(reactiveEyes, { scale: 1, duration: 0.42, ease: 'expo.out' })
+      }
       if (reduced) draw()
     }
 
@@ -248,18 +337,24 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       if (!target) return
       pointer.active = true
       setInteraction('hover')
-      gsap.to(figure, { scale: 1.12, duration: 0.32, ease: 'back.out(2)', overwrite: 'auto' })
+      gsap.to(figure, { scale: 1.1, duration: 0.38, ease: 'expo.out', overwrite: 'auto' })
+      const reactiveEyes = target.querySelectorAll('.mask-proof__eye')
+      if (reactiveEyes.length) gsap.to(reactiveEyes, { scale: 1.06, duration: 0.38, ease: 'expo.out', overwrite: 'auto' })
     }
 
     const onPointerOut = (event: PointerEvent) => {
       const target = (event.target as Element | null)?.closest('a, button, [data-spider-react]')
       if (!target) return
+      pointer.active = false
       gsap.to(figure, { scale: 1, duration: 0.42, ease: 'expo.out', overwrite: 'auto' })
+      const reactiveEyes = target.querySelectorAll('.mask-proof__eye')
+      if (reactiveEyes.length) gsap.to(reactiveEyes, { scale: 1, duration: 0.42, ease: 'expo.out', overwrite: 'auto' })
     }
 
     const onScroll = () => {
       const next = window.scrollY
       scrollVelocity += next - lastScroll
+      world.dataset.direction = next >= lastScroll ? 'down' : 'up'
       lastScroll = next
       setInteraction('scroll')
       detectTone()
@@ -277,8 +372,15 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
         return
       }
 
-      gsap.set(figure, { x: () => width * 0.025, y: () => height * 0.62, rotate: -14 })
-      gsap.timeline({
+      gsap.set(figure, { x: 0, y: 0, rotate: 0 })
+      gsap.to(figure, {
+        ease: 'none',
+        motionPath: {
+          path: path ?? '.spider-world__path',
+          align: path ?? '.spider-world__path',
+          alignOrigin: [0.5, 0.08],
+          autoRotate: 90,
+        },
         scrollTrigger: {
           trigger: scope,
           start: 'top top',
@@ -287,13 +389,6 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
           invalidateOnRefresh: true,
         },
       })
-        .to(figure, { x: () => width * 0.76, y: () => height * 0.12, rotate: 17, duration: 1, ease: 'none' })
-        .to(figure, { x: () => width * 0.1, y: () => height * 0.38, rotate: -22, duration: 1, ease: 'none' })
-        .to(figure, { x: () => width * 0.72, y: () => height * 0.58, rotate: 12, duration: 1, ease: 'none' })
-        .to(figure, { x: () => width * 0.16, y: () => height * 0.1, rotate: -12, duration: 1, ease: 'none' })
-        .to(figure, { x: () => width * 0.7, y: () => height * 0.38, rotate: 18, duration: 1, ease: 'none' })
-        .to(figure, { x: () => width * 0.08, y: () => height * 0.66, rotate: -18, duration: 1, ease: 'none' })
-        .to(figure, { x: () => width * 0.72, y: () => height * 0.17, rotate: 8, duration: 1, ease: 'none' })
 
       gsap.fromTo(path, { strokeDashoffset: 1 }, {
         strokeDashoffset: 0,
@@ -313,6 +408,7 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
     return () => {
       window.cancelAnimationFrame(frame)
       window.clearTimeout(interactionTimer)
+      window.clearTimeout(pointerTimer)
       motionContext.revert()
       window.removeEventListener('resize', resize)
       window.removeEventListener('scroll', onScroll)
@@ -325,12 +421,13 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
   }, [scopeRef])
 
   return (
-    <div className="spider-world" ref={worldRef} data-tone="dark" data-interaction="idle" aria-hidden="true">
+    <div className="spider-world" ref={worldRef} data-tone="red" data-origin="right" data-direction="down" data-interaction="idle" aria-hidden="true">
       <canvas className="spider-world__canvas" ref={canvasRef} data-qa="reactive-web-canvas" />
       <div className="spider-world__sense" />
       <svg className="spider-world__route" viewBox="0 0 1000 1000" preserveAspectRatio="none">
-        <path className="spider-world__path" pathLength="1" d="M-80 820C180 640 40 310 318 180s380 222 590 42 32-290 212-350" />
+        <path className="spider-world__path" pathLength="1" d="M80 820C240 720 60 500 220 330S620 120 850 230s70 330-130 340S250 410 120 610s140 350 400 190 240-500 490-390-30 310-170 460" />
       </svg>
+      <div className="spider-world__status"><span>Spider-Sense</span><i /><span>Web tension</span></div>
       <div className="spider-figure" ref={figureRef} data-qa="scrolling-spider-man">
         <span className="spider-figure__thread" />
         <SpiderFigure />

@@ -48,6 +48,14 @@ for (const width of widths) {
 
   await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
   await page.waitForTimeout(1700)
+  await page.locator('.drop-hero__video').evaluate((video) => new Promise((resolve) => {
+    if (video instanceof HTMLVideoElement && video.videoWidth > 0) return resolve(true)
+    const timer = window.setTimeout(() => resolve(false), 5000)
+    video.addEventListener('loadedmetadata', () => {
+      window.clearTimeout(timer)
+      resolve(true)
+    }, { once: true })
+  }))
 
   const metrics = await page.evaluate(() => {
     const rect = (selector) => {
@@ -132,7 +140,7 @@ for (const width of widths) {
   if (runtimeErrors.length) failures.push(`${width}px: ${runtimeErrors.join(' | ')}`)
 
   results.push({ width, height, overflow, heroCtaInFirstView, filmIsFullFrame, identityFits, footerFits, spiderWorldFits, runtimeErrors, metrics })
-  if (captureDir && (width === 390 || width === 1440)) {
+  if (captureDir && [320, 390, 430, 1440].includes(width)) {
     await page.screenshot({ path: path.join(captureDir, `hero-${width}.png`) })
     for (const [name, selector] of [['product', '#product'], ['powers', '.proofs'], ['identity', '#identity'], ['reserve', '#reserve']]) {
       await page.evaluate((target) => document.querySelector(target)?.scrollIntoView({ behavior: 'instant' }), selector)
@@ -155,6 +163,11 @@ const touchReaction = await flow.locator('.spider-world').getAttribute('data-int
 await flow.evaluate(() => document.getElementById('product')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(180)
 const runnerMidTransform = await flow.locator('[data-qa="scrolling-spider-man"]').evaluate((node) => getComputedStyle(node).transform)
+await flow.evaluate(() => document.querySelector('.proofs')?.scrollIntoView({ behavior: 'instant' }))
+await flow.waitForTimeout(260)
+const powerOrigin = await flow.locator('.spider-world').getAttribute('data-origin')
+const maskEyeCount = await flow.locator('.mask-proof__eye').count()
+const powerTabs = await flow.locator('.proofs__power-tab').allTextContents()
 await flow.evaluate(() => document.getElementById('reserve')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(500)
 await flow.getByRole('button', { name: 'M', exact: true }).click()
@@ -172,6 +185,7 @@ const railVisibleAtFooter = await flow.locator('.drop-sticky').getAttribute('dat
 
 if (!nativeTouch || !navReserveVisible) failures.push('390px: mobile navigation or native touch failed')
 if (touchReaction !== 'touch' || runnerStartTransform === runnerMidTransform) failures.push('390px: Spider-Man touch or scroll reaction failed')
+if (powerOrigin !== 'left' || maskEyeCount !== 2 || powerTabs.join(',') !== 'MASK,WEB,SENSE') failures.push('390px: radial web origin or mask power scene failed')
 if (selected !== 'true' || !confirmEnabled || !confirmation) failures.push('390px: reserve interaction failed')
 if (railVisibleMidPage !== 'true' || railVisibleAtFooter !== 'false') failures.push('390px: commerce rail boundary failed')
 
@@ -202,6 +216,9 @@ console.log(JSON.stringify({
     touchReaction,
     runnerStartTransform,
     runnerMidTransform,
+    powerOrigin,
+    maskEyeCount,
+    powerTabs,
     selected,
     confirmEnabled,
     confirmation,
