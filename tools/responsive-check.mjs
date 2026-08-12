@@ -76,6 +76,17 @@ for (const width of widths) {
       heroTitle: rect('.drop-hero__hook'),
       heroCta: rect('.drop-hero__action button'),
       filmWindow: rect('.drop-hero__video-wrap'),
+      spiderWorld: rect('.spider-world'),
+      spiderRunner: rect('[data-qa="scrolling-spider-man"]'),
+      webCanvas: (() => {
+        const canvas = document.querySelector('[data-qa="reactive-web-canvas"]')
+        if (!(canvas instanceof HTMLCanvasElement)) return null
+        return {
+          width: canvas.width,
+          height: canvas.height,
+          pointerEvents: getComputedStyle(canvas).pointerEvents,
+        }
+      })(),
       film: (() => {
         const video = document.querySelector('.drop-hero__video')
         if (!(video instanceof HTMLVideoElement)) return null
@@ -102,17 +113,32 @@ for (const width of widths) {
   )
   const identityFits = Boolean(metrics.identity && metrics.identity.right <= width + 1)
   const footerFits = Boolean(metrics.footerCredit && metrics.footerCredit.width <= width + 1)
+  const spiderWorldFits = Boolean(
+    metrics.spiderWorld &&
+      metrics.spiderWorld.width === width &&
+      metrics.spiderWorld.height === height &&
+      metrics.webCanvas?.width >= width &&
+      metrics.webCanvas?.height >= height &&
+      metrics.webCanvas?.pointerEvents === 'none' &&
+      metrics.spiderRunner?.width > 50,
+  )
 
   if (overflow) failures.push(`${width}px: horizontal overflow`)
   if (!heroCtaInFirstView) failures.push(`${width}px: primary CTA leaves first view`)
   if (!filmIsFullFrame) failures.push(`${width}px: hero film is not a full 16:9 source frame`)
   if (!identityFits) failures.push(`${width}px: identity overflows`)
   if (!footerFits) failures.push(`${width}px: footer credit overflows`)
+  if (!spiderWorldFits) failures.push(`${width}px: persistent Spider-Man world failed`)
   if (runtimeErrors.length) failures.push(`${width}px: ${runtimeErrors.join(' | ')}`)
 
-  results.push({ width, height, overflow, heroCtaInFirstView, filmIsFullFrame, identityFits, footerFits, runtimeErrors, metrics })
+  results.push({ width, height, overflow, heroCtaInFirstView, filmIsFullFrame, identityFits, footerFits, spiderWorldFits, runtimeErrors, metrics })
   if (captureDir && (width === 390 || width === 1440)) {
     await page.screenshot({ path: path.join(captureDir, `hero-${width}.png`) })
+    for (const [name, selector] of [['product', '#product'], ['powers', '.proofs'], ['identity', '#identity'], ['reserve', '#reserve']]) {
+      await page.evaluate((target) => document.querySelector(target)?.scrollIntoView({ behavior: 'instant' }), selector)
+      await page.waitForTimeout(450)
+      await page.screenshot({ path: path.join(captureDir, `${name}-${width}.png`) })
+    }
   }
   await page.close()
 }
@@ -122,6 +148,13 @@ await flow.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
 await flow.waitForTimeout(1700)
 const nativeTouch = await flow.evaluate(() => matchMedia('(pointer: coarse)').matches)
 const navReserveVisible = await flow.locator('.drop-nav__buy').isVisible()
+const runnerStartTransform = await flow.locator('[data-qa="scrolling-spider-man"]').evaluate((node) => getComputedStyle(node).transform)
+await flow.touchscreen.tap(195, 422)
+await flow.waitForTimeout(80)
+const touchReaction = await flow.locator('.spider-world').getAttribute('data-interaction')
+await flow.evaluate(() => document.getElementById('product')?.scrollIntoView({ behavior: 'instant' }))
+await flow.waitForTimeout(180)
+const runnerMidTransform = await flow.locator('[data-qa="scrolling-spider-man"]').evaluate((node) => getComputedStyle(node).transform)
 await flow.evaluate(() => document.getElementById('reserve')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(500)
 await flow.getByRole('button', { name: 'M', exact: true }).click()
@@ -138,6 +171,7 @@ await flow.waitForTimeout(500)
 const railVisibleAtFooter = await flow.locator('.drop-sticky').getAttribute('data-visible')
 
 if (!nativeTouch || !navReserveVisible) failures.push('390px: mobile navigation or native touch failed')
+if (touchReaction !== 'touch' || runnerStartTransform === runnerMidTransform) failures.push('390px: Spider-Man touch or scroll reaction failed')
 if (selected !== 'true' || !confirmEnabled || !confirmation) failures.push('390px: reserve interaction failed')
 if (railVisibleMidPage !== 'true' || railVisibleAtFooter !== 'false') failures.push('390px: commerce rail boundary failed')
 
@@ -165,6 +199,9 @@ console.log(JSON.stringify({
   flow: {
     nativeTouch,
     navReserveVisible,
+    touchReaction,
+    runnerStartTransform,
+    runnerMidTransform,
     selected,
     confirmEnabled,
     confirmation,

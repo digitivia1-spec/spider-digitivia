@@ -7,27 +7,28 @@ import type { Size } from '../config/site'
 import { useApp } from '../state/store'
 import heroFilm from '../../113354-697718015_medium.mp4?url'
 import heroPoster from '../../src-assets/film/face-02.webp'
+import { SpiderWorld } from './SpiderWorld'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const PROOFS = [
   {
-    index: '01',
-    label: 'The object',
-    title: 'Cut to move.',
-    body: 'A close-fit performance shell built as a collectible piece, not a costume-store replica.',
+    index: 'MASK',
+    label: 'The silhouette',
+    title: 'See through white eyes.',
+    body: 'A sharp, unmistakable mask profile leads every angle. No generic superhero language. No borrowed costume shape.',
   },
   {
-    index: '02',
-    label: 'The edition',
-    title: 'One of five hundred.',
-    body: 'Every suit carries a permanent edition number. No restock language. No endless run.',
+    index: 'WEB',
+    label: 'The movement',
+    title: 'Every gesture throws a web.',
+    body: 'Scroll stretches the field. Hover pulls it closer. Touch sends a live web pulse through the whole experience.',
   },
   {
-    index: '03',
-    label: 'The signal',
-    title: 'Your number moves.',
-    body: 'Digitivia pairs each edition with a distinct motion signature built around its serial.',
+    index: 'SENSE',
+    label: 'The identity',
+    title: 'Your edition has Spider-Sense.',
+    body: 'Digitivia turns each numbered suit into a personal motion signal that reacts before the page stands still.',
   },
 ] as const
 
@@ -40,36 +41,36 @@ function SpiderStamp() {
   )
 }
 
-function WeaveProof() {
-  const lines = Array.from({ length: 18 }, (_, index) => index)
+function MaskProof() {
   return (
-    <svg className="proof-graphic proof-graphic--weave" viewBox="0 0 600 600" aria-hidden="true">
+    <svg className="proof-graphic proof-graphic--mask" viewBox="0 0 600 600" aria-hidden="true">
       <rect width="600" height="600" />
-      <g>
-        {lines.map((line) => (
-          <Fragment key={line}>
-            <path d={`M${-180 + line * 46} 620 L${230 + line * 46} -20`} />
-            <path d={`M${-220 + line * 46} -20 L${190 + line * 46} 620`} />
-          </Fragment>
-        ))}
+      <path className="mask-proof__head" d="M151 239C163 97 239 35 300 35s137 62 149 204c12 142-68 282-149 309-81-27-161-167-149-309Z" />
+      <g className="mask-proof__web">
+        <path d="M300 39v503M170 161c89 57 171 57 260 0M152 259c105 62 191 62 296 0M168 369c92 56 172 56 264 0M217 471c57 32 109 32 166 0" />
+        <path d="M300 39C225 133 181 230 157 327M300 39c75 94 119 191 143 288M300 39c-35 128-52 292-43 478M300 39c35 128 52 292 43 478" />
       </g>
-      <path className="proof-graphic__slash" d="M-40 448 640 152" />
-      <circle cx="300" cy="300" r="62" />
-      <circle cx="300" cy="300" r="12" />
+      <path className="mask-proof__eye" d="M190 226c16-67 51-116 86-139-5 89-31 148-80 188Z" />
+      <path className="mask-proof__eye" d="M410 226c-16-67-51-116-86-139 5 89 31 148 80 188Z" />
     </svg>
   )
 }
 
-function NumberProof() {
+function WebProof() {
   return (
-    <div className="number-proof" aria-hidden="true">
-      <span>Edition</span>
-      <strong>001</strong>
-      <div className="number-proof__barcode">
-        {Array.from({ length: 32 }, (_, index) => <i key={index} />)}
-      </div>
-      <small>001 / 500</small>
-    </div>
+    <svg className="proof-graphic proof-graphic--web" viewBox="0 0 600 600" aria-hidden="true">
+      <rect width="600" height="600" />
+      <g className="web-proof__radials">
+        {Array.from({ length: 16 }, (_, index) => {
+          const angle = (Math.PI * 2 * index) / 16
+          return <line key={index} x1="300" y1="300" x2={300 + Math.cos(angle) * 440} y2={300 + Math.sin(angle) * 440} />
+        })}
+      </g>
+      <g className="web-proof__rings">
+        {Array.from({ length: 7 }, (_, index) => <circle key={index} cx="300" cy="300" r={42 + index * 52} />)}
+      </g>
+      <circle className="web-proof__core" cx="300" cy="300" r="18" />
+    </svg>
   )
 }
 
@@ -87,7 +88,18 @@ function SignalProof() {
         <circle cx="336" cy="468" r="10" />
         <circle cx="512" cy="131" r="10" />
       </g>
-      <text x="32" y="56">DIGITIVIA MOTION ID / 001</text>
+      <path className="signal-mask" d="M244 169c4-50 31-78 56-78s52 28 56 78c4 51-25 103-56 113-31-10-60-62-56-113Z" />
+      <path className="signal-eye" d="M261 163c5-25 18-43 31-51-2 33-11 55-28 69Zm78 0c-5-25-18-43-31-51 2 33 11 55 28 69Z" />
+      <text x="32" y="56">SPIDER-SENSE / MOTION ID 001</text>
+    </svg>
+  )
+}
+
+function SpiderEyes({ className = '' }: { className?: string }) {
+  return (
+    <svg className={`spider-eyes ${className}`} viewBox="0 0 600 260" aria-hidden="true">
+      <path d="M52 40c38 111 103 170 208 190-48-80-106-143-208-190Z" />
+      <path d="M548 40c-38 111-103 170-208 190 48-80 106-143 208-190Z" />
     </svg>
   )
 }
@@ -251,12 +263,13 @@ export function DropExperience() {
 
   return (
     <main className="drop-site" ref={rootRef}>
+      <SpiderWorld scopeRef={rootRef} />
       <a className="drop-skip" href="#product">Skip to product</a>
 
       <nav className="drop-nav" aria-label="Main navigation">
         <a className="drop-nav__mark" href="#top" aria-label="The Web Suit home">
           <SpiderStamp />
-          <span>SPDR / 001</span>
+          <span>SPIDER-SENSE</span>
         </a>
         <div className="drop-nav__links">
           <a href="#product">The suit</a>
@@ -271,13 +284,13 @@ export function DropExperience() {
       <section className="drop-hero" id="top" aria-labelledby="drop-hook">
         <div className="drop-hero__stage">
           <div className="drop-hero__issue" data-drop-intro>
-            <span>Drop 001</span>
-            <span>Worldwide concept release</span>
+            <span>Spider-Man × Digitivia</span>
+            <span>Spider-Sense active</span>
           </div>
           <p className="drop-hero__product-name" data-drop-intro>The Web Suit / Spider-Man × Digitivia</p>
           <h1 className="drop-hero__hook" id="drop-hook">
-            <span data-drop-intro>Only <em>500</em></span>
-            <span data-drop-intro>get a number.</span>
+            <span data-drop-intro>Wear the <em>mask.</em></span>
+            <span data-drop-intro>Move like Spider-Man.</span>
           </h1>
           <div className="drop-hero__video-wrap">
             <video
@@ -298,27 +311,24 @@ export function DropExperience() {
           </div>
 
           <div className="drop-hero__collector" aria-hidden="true">
-            <div className="drop-hero__collector-head"><span>Collector record</span><span>Drop 001</span></div>
-            <strong>001</strong>
-            <div className="drop-hero__collector-barcode">
-              {Array.from({ length: 24 }, (_, index) => <i key={index} />)}
-            </div>
-            <small>Edition 001 / 500</small>
+            <div className="drop-hero__collector-head"><span>Spider-Sense</span><span>Signal 001</span></div>
+            <SpiderEyes className="drop-hero__collector-eyes" />
+            <small>Mask online / web field live</small>
           </div>
 
           <div className="drop-hero__second-act" aria-hidden="true">
-            <span>Scroll reveal / ownership</span>
-            <strong>The suit is physical.<br />The signal is yours.</strong>
+            <span>Scroll / swing / sense</span>
+            <strong>He follows<br />every move.</strong>
           </div>
 
           <div className="drop-hero__action" data-drop-intro>
-            <p>One physical suit. One permanent serial. One motion identity keyed to its owner.</p>
+            <p>A physical Spider-Man suit with a personal web signal keyed to its numbered owner.</p>
             <button type="button" onClick={scrollToReserve}>
               <span>Claim your edition</span>
               <span aria-hidden="true">↘</span>
             </button>
           </div>
-          <p className="drop-hero__credit" data-drop-intro>Scroll to reveal your record</p>
+          <p className="drop-hero__credit" data-drop-intro>Scroll and Spider-Man enters the world</p>
           <div className="drop-hero__progress" aria-hidden="true"><span /></div>
         </div>
       </section>
@@ -327,35 +337,36 @@ export function DropExperience() {
         <div>
           {Array.from({ length: 4 }, (_, index) => (
             <Fragment key={index}>
-              <span>500 numbered</span><i>✳</i><span>One signal each</span><i>✳</i><span>{DROP.currency}{DROP.price}</span><i>✳</i>
+              <span>Spider-Man is moving</span><i>✳</i><span>Touch to throw a web</span><i>✳</i><span>Spider-Sense is live</span><i>✳</i>
             </Fragment>
           ))}
         </div>
       </div>
 
-      <section className="product-intro" id="product" aria-labelledby="product-title">
-        <div className="product-intro__index" data-drop-reveal>01 / The proposition</div>
+      <section className="product-intro" id="product" aria-labelledby="product-title" data-world-tone="light">
+        <SpiderEyes className="product-intro__eyes" />
+        <div className="product-intro__index" data-drop-reveal>Built in the Spider-Man silhouette</div>
         <div className="product-intro__copy">
-          <h2 id="product-title" data-drop-reveal>Not merch.<br /><span>A numbered object.</span></h2>
-          <p data-drop-reveal>The Web Suit joins a physical collectible with a digital identity. The object is Spider-Man. The world around ownership is Digitivia.</p>
+          <h2 id="product-title" data-drop-reveal>Spider-Man.<br /><span>In every layer.</span></h2>
+          <p data-drop-reveal>The mask, the eyes, the web geometry, the acrobatic movement, and the Spider-Sense reaction system all belong to one collectible suit world.</p>
         </div>
         <div className="product-intro__facts" data-drop-reveal>
-          <div><span>Run</span><strong>500</strong><small>Never repeated</small></div>
-          <div><span>Price</span><strong>{DROP.currency}{DROP.price}</strong><small>Concept checkout</small></div>
-          <div><span>Pairing</span><strong>1:1</strong><small>Suit to signal</small></div>
+          <div data-spider-react><span>Mask</span><strong>White eyes</strong><small>Always watching</small></div>
+          <div data-spider-react><span>Web</span><strong>Live field</strong><small>Scroll, hover, touch</small></div>
+          <div data-spider-react><span>Sense</span><strong>1:1 signal</strong><small>Suit to owner</small></div>
         </div>
       </section>
 
-      <section className="proofs" aria-labelledby="proofs-title">
+      <section className="proofs" aria-labelledby="proofs-title" data-world-tone="dark">
         <div className="proofs__stage">
           <div className="proofs__topline">
-            <p id="proofs-title">02 / What you own</p>
-            <span>Scroll through the proof</span>
+            <p id="proofs-title">Three powers. One Spider-Man world.</p>
+            <span>Keep scrolling. He keeps moving.</span>
           </div>
           <div className="proofs__visuals" aria-hidden="true">
-            <div className="proofs__visual-card"><WeaveProof /></div>
-            <div className="proofs__visual-card"><NumberProof /></div>
-            <div className="proofs__visual-card"><SignalProof /></div>
+            <div className="proofs__visual-card" data-spider-react><MaskProof /></div>
+            <div className="proofs__visual-card" data-spider-react><WebProof /></div>
+            <div className="proofs__visual-card" data-spider-react><SignalProof /></div>
           </div>
           <div className="proofs__copy">
             {PROOFS.map((proof) => (
@@ -370,34 +381,36 @@ export function DropExperience() {
         </div>
       </section>
 
-      <section className="identity" id="identity" aria-labelledby="identity-title">
-        <p className="identity__eyebrow" data-drop-reveal>03 / Digitivia layer</p>
+      <section className="identity" id="identity" aria-labelledby="identity-title" data-world-tone="red">
+        <SpiderEyes className="identity__eyes" />
+        <p className="identity__eyebrow" data-drop-reveal>Digitivia turns the signal on</p>
         <h2 className="identity__headline" id="identity-title">
-          <span className="identity__word--one">Your number</span>
-          <span className="identity__word--two">moves.</span>
+          <span className="identity__word--one">Spider-Sense</span>
+          <span className="identity__word--two">is yours.</span>
         </h2>
         <svg className="identity__trace" viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
           <path pathLength="1" d="M-40 228C120 228 120 76 280 76s160 228 320 228S760 36 920 36s160 192 320 192" />
           <path pathLength="1" d="M-40 284c130 0 130-160 260-160s130 160 260 160 130-160 260-160 130 160 260 160 130-160 260-160" />
         </svg>
         <div className="identity__bottom">
-          <p data-drop-reveal>Edition 001 does not move like edition 500. Every serial becomes a distinct visual rhythm, creating a digital ownership mark without competing with the physical suit.</p>
+          <p data-drop-reveal>Edition 001 does not react like edition 500. Each serial becomes a distinct web rhythm that stretches, pulses, and follows its owner through the Digitivia layer.</p>
           <div className="identity__sample" data-drop-reveal aria-label="Example motion identity 001">
-            <span>Motion identity</span><strong>001</strong><small>Signal active</small>
+            <span>Spider-Sense identity</span><strong>001</strong><small>Web signal active</small>
           </div>
         </div>
       </section>
 
-      <section className="reserve-new" id="reserve" aria-labelledby="reserve-new-title">
+      <section className="reserve-new" id="reserve" aria-labelledby="reserve-new-title" data-world-tone="light">
+        <SpiderEyes className="reserve-new__eyes" />
         <div className="reserve-new__header">
-          <p data-drop-reveal>04 / Reserve Drop 001</p>
-          <h2 id="reserve-new-title" data-drop-reveal>Pick the fit.<br />Hold the number.</h2>
+          <p data-drop-reveal>Five sizes. Five hundred suits.</p>
+          <h2 id="reserve-new-title" data-drop-reveal>Choose your fit.<br />Wear the mask.</h2>
         </div>
         <div className="reserve-new__layout">
-          <div className="reserve-new__edition" data-drop-reveal aria-hidden="true">
-            <span>Limited series</span>
-            <strong>500</strong>
-            <small>physical units</small>
+          <div className="reserve-new__edition" data-drop-reveal data-spider-react aria-hidden="true">
+            <span>Mask access</span>
+            <SpiderEyes />
+            <small>500 physical suits</small>
           </div>
           <div className="reserve-new__form" data-drop-reveal>
             <div className="reserve-new__price"><span>The Web Suit</span><strong>{DROP.currency}{DROP.price}</strong></div>
@@ -432,7 +445,8 @@ export function DropExperience() {
         </div>
       </section>
 
-      <footer className="drop-footer">
+      <footer className="drop-footer" data-world-tone="dark">
+        <SpiderEyes className="drop-footer__eyes" />
         <p>The suit is the object.<br />Digitivia builds the world around it.</p>
         <a href="https://digitivia.com" target="_blank" rel="noopener noreferrer">Digitivia</a>
         <div><span>Fan-made concept. Not affiliated with Marvel or Sony.</span><span>Concept 2026</span></div>

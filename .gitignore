@@ -4,6 +4,7 @@ node_modules/
 dist/
 .codex-tmp/
 .playwright-cli/
+output/playwright/
 .claude/
 *.log
 .DS_Store

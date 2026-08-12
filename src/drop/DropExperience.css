@@ -6,7 +6,7 @@
   --drop-ink: oklch(0.185 0.046 254);
   --drop-ink-soft: oklch(0.31 0.042 254);
   --drop-line: oklch(0.185 0.046 254 / 0.2);
-  --drop-display: 'Bricolage Grotesque Variable', sans-serif;
+  --drop-display: 'Cabinet Grotesk', 'Bricolage Grotesque Variable', sans-serif;
   --drop-body: 'Manrope Variable', sans-serif;
   position: relative;
   min-height: 100dvh;
@@ -1365,8 +1365,323 @@
   .product-intro h2 { font-size: clamp(7rem, 9vw, 10.5rem); }
 }
 
+/* The shared Spider-Man world sits above section paint and below every control. */
+.drop-site > section,
+.drop-site > footer,
+.drop-site > .drop-ticker {
+  isolation: isolate;
+}
+
+.drop-hero__hook {
+  max-width: calc(100% - 28px);
+  font-size: clamp(2.2rem, 9.8vw, 4rem);
+  line-height: 0.84;
+}
+
+.drop-hero__hook span {
+  width: auto;
+}
+
+.drop-hero__hook span:first-child {
+  font-size: 1.12em;
+}
+
+.drop-hero__hook span:last-child {
+  margin-top: 0.05em;
+  text-align: end;
+}
+
+.drop-hero__collector {
+  grid-template-rows: auto 1fr auto;
+  background: var(--drop-red);
+  color: var(--drop-paper);
+  box-shadow: 12px 14px 0 var(--drop-paper);
+}
+
+.drop-hero__collector-eyes {
+  align-self: center;
+  width: 100%;
+  color: var(--drop-paper);
+  filter: drop-shadow(0 8px 0 var(--drop-ink));
+}
+
+.spider-eyes {
+  overflow: visible;
+  color: currentColor;
+}
+
+.spider-eyes path {
+  fill: currentColor;
+  stroke: var(--drop-ink);
+  stroke-width: 14;
+  stroke-linejoin: round;
+}
+
+.product-intro__eyes,
+.identity__eyes,
+.reserve-new__eyes,
+.drop-footer__eyes {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.product-intro__eyes {
+  inset: 22% -20% auto;
+  width: 140%;
+  color: var(--drop-red);
+  opacity: 0.065;
+  transform: rotate(-8deg);
+}
+
+.product-intro__index,
+.product-intro__copy,
+.product-intro__facts {
+  position: relative;
+  z-index: 2;
+}
+
+.product-intro__facts > div {
+  position: relative;
+  overflow: hidden;
+  transition: color 280ms ease, background-color 280ms ease, padding 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-intro__facts > div::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: var(--drop-red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-intro__facts > div:hover,
+.product-intro__facts > div:focus-within {
+  color: var(--drop-paper);
+  background: var(--drop-ink);
+}
+
+.product-intro__facts > div:hover::after,
+.product-intro__facts > div:focus-within::after {
+  transform: scaleX(1);
+}
+
+.proof-graphic--mask rect {
+  fill: var(--drop-red);
+}
+
+.proof-graphic--mask .mask-proof__head {
+  fill: var(--drop-red-hot);
+  stroke: var(--drop-paper);
+  stroke-width: 7;
+}
+
+.proof-graphic--mask .mask-proof__web {
+  fill: none;
+  stroke: var(--drop-ink);
+  stroke-width: 3;
+}
+
+.proof-graphic--mask .mask-proof__eye {
+  fill: var(--drop-paper);
+  stroke: var(--drop-ink);
+  stroke-width: 12;
+  stroke-linejoin: round;
+}
+
+.proof-graphic--web rect {
+  fill: var(--drop-paper);
+}
+
+.web-proof__radials,
+.web-proof__rings {
+  fill: none;
+  stroke: var(--drop-ink);
+  stroke-width: 3;
+}
+
+.web-proof__rings {
+  stroke: var(--drop-red);
+  stroke-width: 6;
+}
+
+.web-proof__core {
+  fill: var(--drop-ink);
+  stroke: var(--drop-red);
+  stroke-width: 10;
+  transform-origin: center;
+  animation: spider-core-pulse 1.4s ease-in-out infinite alternate;
+}
+
+.proofs__visual-card:hover .web-proof__rings {
+  animation: spider-web-spin 8s linear infinite;
+  transform-origin: center;
+}
+
+.proof-graphic--signal .signal-mask {
+  fill: var(--drop-ink);
+  stroke: var(--drop-paper);
+  stroke-width: 5;
+}
+
+.proof-graphic--signal .signal-eye {
+  fill: var(--drop-paper);
+  stroke: var(--drop-ink);
+  stroke-width: 8;
+  stroke-linejoin: round;
+}
+
+.proofs__visual-card {
+  transition: border-color 260ms ease, box-shadow 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.proofs__visual-card:hover {
+  border-color: var(--drop-red-hot);
+  box-shadow: 24px 26px 0 var(--drop-red);
+}
+
+.identity::after {
+  content: 'SPDR';
+  inset-inline-end: -0.04em;
+  font-size: min(47vw, 32rem);
+}
+
+.identity__eyes {
+  inset: 12% -18% auto;
+  width: 136%;
+  color: var(--drop-paper);
+  opacity: 0.1;
+  transform: rotate(5deg);
+}
+
+.identity__eyebrow,
+.identity__headline {
+  position: relative;
+  z-index: 2;
+}
+
+.identity__bottom {
+  position: absolute;
+  z-index: 2;
+}
+
+.identity__headline {
+  font-size: clamp(3.15rem, 15vw, 11rem);
+}
+
+.reserve-new {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.reserve-new__eyes {
+  inset: 3% -22% auto;
+  width: 145%;
+  color: var(--drop-red);
+  opacity: 0.052;
+}
+
+.reserve-new__header,
+.reserve-new__layout {
+  position: relative;
+  z-index: 2;
+}
+
+.reserve-new__edition {
+  position: relative;
+  overflow: hidden;
+  transition: background-color 280ms ease;
+}
+
+.reserve-new__edition > .spider-eyes {
+  align-self: center;
+  width: 100%;
+  color: var(--drop-paper);
+  filter: drop-shadow(0 10px 0 var(--drop-ink));
+  transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reserve-new__edition:hover {
+  background: var(--drop-ink);
+}
+
+.reserve-new__edition:hover > .spider-eyes {
+  color: var(--drop-red);
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.drop-footer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.drop-footer__eyes {
+  inset: 20% -28% auto;
+  width: 155%;
+  color: var(--drop-red);
+  opacity: 0.08;
+}
+
+.drop-footer > p,
+.drop-footer > a,
+.drop-footer > div {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes spider-core-pulse {
+  from { transform: scale(0.72); opacity: 0.68; }
+  to { transform: scale(1.14); opacity: 1; }
+}
+
+@keyframes spider-web-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (min-width: 760px) {
+  .drop-hero__hook {
+    max-width: calc(100% - (2 * var(--gutter)));
+    font-size: clamp(4.5rem, 7.5vw, 8.4rem);
+  }
+
+  .drop-hero__collector {
+    box-shadow: 18px 20px 0 var(--drop-paper);
+  }
+
+  .product-intro__eyes {
+    inset-block-start: 9%;
+    inset-inline: 11% -9%;
+    width: 98%;
+  }
+
+  .product-intro__facts > div:hover {
+    padding-inline: 28px;
+  }
+
+  .identity__headline {
+    font-size: clamp(6.4rem, 12.5vw, 12rem);
+  }
+
+  .identity__eyes {
+    inset: 0 -10% auto;
+    width: 112%;
+  }
+
+  .reserve-new__eyes {
+    inset: -9% -6% auto auto;
+    width: 72%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .drop-ticker > div { animation: none; }
+  .web-proof__core,
+  .proofs__visual-card:hover .web-proof__rings { animation: none; }
   .drop-hero { min-height: 100svh; min-height: 100dvh; }
   .drop-hero__stage { position: relative; }
   .drop-hero__video,
