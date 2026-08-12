@@ -1,0 +1,79 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 420ms ease, transform 420ms cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+.loader[data-phase='out'] {
+  opacity: 0;
+  transform: translateY(-6%);
+  pointer-events: none;
+}
+
+.loader__eyes {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 2vw, 14px);
+  width: min(78vw, 420px);
+  filter: drop-shadow(0 0 40px rgba(226, 54, 54, 0.35));
+}
+
+.loader__lens {
+  width: 50%;
+  height: auto;
+  overflow: visible;
+  transform: scaleY(1);
+  transition: transform 380ms cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+.loader[data-phase='out'] .loader__lens {
+  transform: scaleY(0.04);
+}
+
+.loader__lens.is-mirror {
+  transform: scaleX(-1);
+}
+
+.loader[data-phase='out'] .loader__lens.is-mirror {
+  transform: scaleX(-1) scaleY(0.04);
+}
+
+.loader__lens-outline {
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: loaderDraw 650ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.loader__lens-fill {
+  fill: var(--fg);
+  transform-origin: 100px 80px;
+  transform: scale(0);
+  animation: loaderFill 500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 280ms;
+}
+
+@keyframes loaderDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes loaderFill {
+  to {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    display: none;
+  }
+}

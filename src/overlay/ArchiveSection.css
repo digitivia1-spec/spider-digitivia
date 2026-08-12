@@ -1,0 +1,258 @@
+/* ArchiveSection — 4-card scroll-scrubbed drop history. All rules scoped
+   under .archive__* / .archive-* so nothing collides with other sections. */
+
+.archive {
+  /* Local, component-scoped only — not a global token. Needed to legibly
+     tell "archived" cards (1-3) apart from the "live" card (4) at a glance,
+     per spec: desaturated cool gray-blue vs hot var(--accent) red. */
+  --archive-cool: #7c8aa3;
+  background: var(--bg);
+}
+
+.archive__card {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding-block: clamp(48px, 12vh, 140px);
+}
+
+.archive__card + .archive__card {
+  border-top: 1px solid var(--card-border);
+}
+
+.archive__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 40px;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .archive__grid {
+    grid-template-columns: minmax(0, 33%) minmax(0, 1fr);
+    column-gap: 16%;
+    row-gap: 0;
+  }
+}
+
+/* --- Poster panel ----------------------------------------------------- */
+
+.archive__poster {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 3 / 4;
+  margin-inline: auto;
+}
+
+@media (min-width: 900px) {
+  .archive__poster {
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+
+.archive__glow {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  filter: blur(56px);
+  opacity: 0.55;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.archive__glow--archived {
+  background: radial-gradient(circle, var(--archive-cool) 0%, transparent 70%);
+}
+
+.archive__glow--live {
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+}
+
+.archive__panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.archive__numeral {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+.archive__numeral text {
+  font-family: var(--display);
+  font-weight: 900;
+  fill: none;
+  stroke: var(--fg);
+  stroke-opacity: 0.16;
+  stroke-width: 1.5px;
+}
+
+.archive__silhouette {
+  position: relative;
+  z-index: 2;
+  width: 56%;
+  height: 68%;
+}
+
+/* The live drop only — a small "still alive" signal the archived cards
+   don't get, reinforcing the state distinction beyond just color. */
+.archive__spider {
+  position: absolute;
+  z-index: 2;
+  bottom: 8%;
+  width: 30px;
+  height: auto;
+  color: var(--accent);
+  animation: archiveSpiderCrawl 11s ease-in-out infinite;
+}
+
+@keyframes archiveSpiderCrawl {
+  0%,
+  100% {
+    left: 10%;
+    transform: scaleX(1);
+  }
+  45% {
+    left: 66%;
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(-1);
+  }
+  95% {
+    left: 10%;
+    transform: scaleX(-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive__spider {
+    animation: none;
+    left: 10%;
+  }
+}
+
+/* --- Meta column -------------------------------------------------------- */
+
+.archive__meta {
+  min-width: 0;
+}
+
+.archive__eyebrow {
+  display: flex;
+  align-items: center;
+}
+
+.archive__rule {
+  width: 18px;
+  height: 1px;
+  flex-shrink: 0;
+  margin-right: 10px;
+  background: var(--accent);
+}
+
+.archive__title {
+  margin-top: 16px;
+  font-size: clamp(2.25rem, 5.5vw, 3.75rem);
+}
+
+.archive__status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.archive__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--body);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.archive__badge--archived {
+  background: var(--accent);
+  color: var(--fg);
+}
+
+.archive__badge--live {
+  background: var(--accent-faint);
+  border: 1px solid var(--accent-dim);
+  color: var(--fg);
+  padding-left: 12px;
+}
+
+.archive__dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 0%, var(--accent) 40%, transparent 75%);
+  animation: archive-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes archive-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive__dot {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.archive__sep {
+  color: var(--fg-faint);
+}
+
+.archive__synopsis {
+  margin-top: 20px;
+}
+
+.archive__detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--card-border);
+}
+
+.archive__value {
+  font-family: var(--body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--fg);
+  text-align: right;
+}

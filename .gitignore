@@ -1,0 +1,9 @@
+.vercel
+.env*
+node_modules/
+dist/
+.codex-tmp/
+.playwright-cli/
+.claude/
+*.log
+.DS_Store

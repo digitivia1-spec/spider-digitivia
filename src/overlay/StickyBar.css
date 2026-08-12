@@ -1,0 +1,63 @@
+.sticky-bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 60;
+  padding: 10px max(var(--safe-r), 12px) calc(var(--safe-b) + 10px) max(var(--safe-l), 12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  border-block-start: 1px solid var(--line);
+  transform: translateY(105%);
+  transition: transform 380ms var(--ease-out);
+}
+
+.sticky-bar[data-visible='true'] {
+  transform: translateY(0);
+}
+
+.sticky-bar > div {
+  min-width: 0;
+}
+
+.sticky-bar__price {
+  display: block;
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.sticky-bar__size {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--ink-faint);
+  font-size: 0.56rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sticky-bar .btn {
+  min-height: 48px;
+  flex: 0 0 auto;
+  padding-inline: 18px;
+  font-size: 0.68rem;
+}
+
+@media (min-width: 900px) {
+  .sticky-bar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky-bar {
+    transition: none;
+  }
+}

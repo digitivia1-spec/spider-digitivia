@@ -1,0 +1,39 @@
+.spider {
+  overflow: visible;
+  color: var(--fg);
+}
+
+.spider__abdomen,
+.spider__head {
+  fill: var(--fg);
+}
+
+.spider__leg {
+  transform-box: fill-box;
+  animation: spiderLegLift 0.42s ease-in-out infinite;
+  animation-delay: var(--leg-delay, 0s);
+}
+
+.spider__leg--a {
+  animation-direction: normal;
+}
+
+.spider__leg--b {
+  animation-direction: reverse;
+}
+
+@keyframes spiderLegLift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spider__leg {
+    animation: none;
+  }
+}

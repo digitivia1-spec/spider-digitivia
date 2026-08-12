@@ -1,0 +1,190 @@
+/* ChapterSection — 4 stacked full-bleed chapters. Scoped under the
+   `chapter-section` prefix so nothing collides with sibling sections. */
+
+.chapter-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.chapter-section__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Rendered still, right two-thirds of the frame — same slot the graphic
+   motifs already occupy, so it reads as one composed shot rather than a
+   photo dropped on top of the design work. */
+.chapter-section__figure {
+  position: absolute;
+  right: -4%;
+  bottom: 0;
+  height: 108%;
+  width: auto;
+  max-width: 78%;
+  object-fit: contain;
+  object-position: bottom right;
+  opacity: 0.8;
+  -webkit-mask-image: linear-gradient(to left, black 55%, transparent 96%);
+  mask-image: linear-gradient(to left, black 55%, transparent 96%);
+}
+
+.chapter-section__figure--countdown,
+.chapter-section__figure--release {
+  opacity: 0.65;
+}
+
+/* Deliberate physical left-to-right scrim + left-aligned text: this mirrors
+   the reference site's fixed cropped-edge signature (see DESIGN.md), not a
+   generic reading-direction layout, so it intentionally does not flip for
+   RTL — same treatment as not mirroring a brand mark. */
+.chapter-section__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--bg) 0%, transparent 60%);
+  opacity: 0.85;
+}
+
+.chapter-section__text {
+  position: relative;
+  z-index: 1;
+  width: 85%;
+  max-width: 500px;
+  padding: 0 20px 0 clamp(8px, 4vw, 28px);
+  box-sizing: border-box;
+}
+
+.chapter-section__eyebrow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.chapter-section__tick {
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.chapter-section__label {
+  /* .meta-label carries the type; nothing to add */
+}
+
+.chapter-section__title {
+  font-size: clamp(4rem, 3vw + 3.2rem, 5.625rem);
+  margin: 18px 0 0;
+  /* Deliberate cropped-edge signature: the title's leading glyph bleeds
+     slightly past the text column, clipped by the section's own overflow —
+     confirmed in the reference, not a bug. */
+  margin-left: -0.05em;
+  position: relative;
+  left: -2px;
+}
+
+.chapter-section__body {
+  margin: 32px 0 0;
+}
+
+/* --- Chapter 1: Reveal — ghost numeral + diagonal hairline ----------------- */
+
+.chapter-section__ghost-numeral {
+  position: absolute;
+  top: -10%;
+  right: -4%;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(220px, 40vw, 760px);
+  line-height: 1;
+  color: var(--fg);
+  opacity: 0.05;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.chapter-section__hairline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Chapter 2: Build — tech-pack line art ---------------------------------- */
+
+.chapter-section__techpack {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 65%;
+  height: 100%;
+}
+
+/* --- Chapter 3: Countdown — outline numeral + glow -------------------------- */
+
+.chapter-section__glow {
+  position: absolute;
+  top: 50%;
+  left: 65%;
+  width: 60vmax;
+  height: 60vmax;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--accent) 0%, transparent 65%);
+  opacity: 0.25;
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.chapter-section__outline-numeral {
+  position: absolute;
+  top: 50%;
+  right: -2%;
+  transform: translateY(-50%);
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(240px, 42vw, 780px);
+  line-height: 1;
+  color: transparent;
+  /* ponytail: -webkit-text-stroke has shipped in Firefox/Chrome/Safari for
+     years under that prefixed name; skipping a plain-color fallback layer,
+     add one if a target browser turns up without support. */
+  -webkit-text-stroke: 1px var(--fg-faint);
+  opacity: 0.8;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* --- Chapter 4: Release — accent wash + radial web motif -------------------- */
+
+.chapter-section__wash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 85% 15%, var(--accent) 0%, transparent 55%);
+  opacity: 0.35;
+}
+
+.chapter-section__web {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-section__media,
+  .chapter-section__text {
+    filter: none !important;
+    opacity: 1 !important;
+  }
+}

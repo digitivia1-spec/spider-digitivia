@@ -1,0 +1,245 @@
+.motion-lab {
+  position: relative;
+  min-height: 240svh;
+  min-height: 240dvh;
+  color: oklch(0.13 0.019 24);
+  background: oklch(0.955 0.012 25);
+}
+
+.motion-lab__stage {
+  position: sticky;
+  inset-block-start: 0;
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow: clip;
+  isolation: isolate;
+  background: oklch(0.955 0.012 25);
+}
+
+.motion-lab__stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image:
+    linear-gradient(oklch(0.14 0.018 24 / 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.14 0.018 24 / 0.08) 1px, transparent 1px);
+  background-size: 12.5vw 12.5vw;
+}
+
+.motion-lab__head {
+  position: absolute;
+  inset-block-start: calc(var(--safe-t) + 78px);
+  inset-inline: max(var(--safe-l), 18px) max(var(--safe-r), 18px);
+  z-index: 6;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.motion-lab__head p,
+.motion-lab__head span {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.motion-lab__head p { color: var(--red); }
+.motion-lab__head span { color: oklch(0.42 0.018 24); text-align: end; }
+
+.motion-lab__index {
+  position: absolute;
+  inset-block-start: 17%;
+  inset-inline-start: max(var(--safe-l), 18px);
+  color: oklch(0.18 0.018 24 / 0.12);
+  font-family: var(--display);
+  font-size: clamp(5.8rem, 22vw, 18rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.055em;
+}
+
+.motion-lab__field {
+  position: absolute;
+  inset: 16% -24% 35%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.motion-lab__field svg {
+  width: 148%;
+  height: 100%;
+  overflow: visible;
+}
+
+.motion-lab__waves,
+.motion-lab__nodes { will-change: transform; }
+
+.motion-lab__wave {
+  fill: none;
+  stroke: oklch(0.2 0.025 248 / 0.25);
+  stroke-width: 1.4;
+  stroke-dasharray: 9 8;
+  vector-effect: non-scaling-stroke;
+}
+
+.motion-lab__wave:nth-child(3n + 1) {
+  stroke: oklch(0.62 0.24 27 / 0.72);
+  stroke-width: 2.2;
+  stroke-dasharray: 2 6;
+}
+
+.motion-lab__nodes circle {
+  fill: var(--red);
+  stroke: none;
+}
+
+.motion-lab__nodes .motion-lab__node-ring {
+  fill: none;
+  stroke: oklch(0.15 0.018 24 / 0.34);
+  stroke-width: 1;
+}
+
+.motion-lab__sweep {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 48%;
+  width: 14%;
+  background: linear-gradient(90deg, transparent, oklch(0.66 0.24 28 / 0.18), transparent);
+  border-inline: 1px solid oklch(0.62 0.24 27 / 0.35);
+  will-change: transform;
+}
+
+.motion-lab__copy {
+  position: absolute;
+  inset-inline: max(var(--safe-l), 18px) max(var(--safe-r), 18px);
+  inset-block-end: calc(var(--safe-b) + 112px);
+  z-index: 5;
+  min-height: 220px;
+  overflow: hidden;
+}
+
+.motion-lab__sr-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.motion-lab__mode {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.motion-lab__mode:first-of-type { opacity: 1; }
+
+.motion-lab__mode p {
+  margin: 0 0 10px;
+  color: var(--red);
+  font-size: 0.61rem;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.motion-lab__mode h3 {
+  max-width: 10ch;
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(3.2rem, 15vw, 8rem);
+  font-weight: 700;
+  line-height: 0.82;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+.motion-lab__mode > span {
+  display: block;
+  max-width: 42ch;
+  margin-top: 14px;
+  color: oklch(0.36 0.018 24);
+  font-size: 0.81rem;
+  line-height: 1.58;
+}
+
+.motion-lab__statement {
+  position: absolute;
+  inset-inline-start: 54%;
+  inset-block-end: 16%;
+  display: none;
+  color: oklch(0.16 0.02 24 / 0.1);
+  font-family: var(--display);
+  font-size: clamp(4rem, 8vw, 9rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+.motion-lab__progress {
+  position: absolute;
+  inset-inline: max(var(--safe-l), 18px) max(var(--safe-r), 18px);
+  inset-block-end: calc(var(--safe-b) + 78px);
+  z-index: 6;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.motion-lab__progress span {
+  height: 2px;
+  background: var(--red);
+  transform: scaleX(0.08);
+  transform-origin: left;
+  opacity: 0.24;
+}
+
+.motion-lab__progress span:first-child { transform: scaleX(1); opacity: 1; }
+
+@media (max-width: 430px) and (max-height: 760px) {
+  .motion-lab__field { inset-block-end: 39%; }
+  .motion-lab__copy { inset-block-end: calc(var(--safe-b) + 92px); }
+  .motion-lab__mode h3 { font-size: clamp(2.8rem, 13vw, 3.5rem); }
+}
+
+@media (min-width: 760px) {
+  .motion-lab__head,
+  .motion-lab__progress { inset-inline: var(--gutter); }
+
+  .motion-lab__field { inset: 8% -10% 8% 33%; }
+  .motion-lab__field svg { width: 128%; }
+
+  .motion-lab__copy {
+    inset-inline-start: var(--gutter);
+    inset-inline-end: auto;
+    inset-block-end: 14vh;
+    width: min(39vw, 540px);
+    min-height: 330px;
+  }
+
+  .motion-lab__mode {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .motion-lab__mode h3 { font-size: clamp(5rem, 7.8vw, 8.8rem); }
+  .motion-lab__mode > span { font-size: 0.95rem; }
+  .motion-lab__statement { display: block; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-lab { min-height: auto; }
+  .motion-lab__stage { position: relative; min-height: 100svh; min-height: 100dvh; }
+  .motion-lab__waves,
+  .motion-lab__nodes,
+  .motion-lab__sweep { transform: none !important; }
+  .motion-lab__mode { display: none; }
+  .motion-lab__mode:first-of-type { display: block; opacity: 1 !important; transform: none !important; }
+}
