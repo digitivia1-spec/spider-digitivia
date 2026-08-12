@@ -92,14 +92,16 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
   const worldRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const figureRef = useRef<HTMLDivElement>(null)
+  const shadowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const scope = scopeRef.current
     const world = worldRef.current
     const canvas = canvasRef.current
     const figure = figureRef.current
+    const shadow = shadowRef.current
     const context = canvas?.getContext('2d')
-    if (!scope || !world || !canvas || !figure || !context) return
+    if (!scope || !world || !canvas || !figure || !shadow || !context) return
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let width = window.innerWidth
@@ -368,11 +370,29 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       const path = world.querySelector<SVGPathElement>('.spider-world__path')
       if (reduced) {
         gsap.set(figure, { x: () => width * 0.72, y: () => height * 0.68, rotate: -9 })
+        gsap.set(shadow, { rotate: -8, scale: 0.96 })
         gsap.set(path, { strokeDashoffset: 0 })
         return
       }
 
       gsap.set(figure, { x: 0, y: 0, rotate: 0 })
+      gsap.fromTo(shadow, {
+        yPercent: 10,
+        rotate: -16,
+        scale: 0.88,
+      }, {
+        yPercent: -12,
+        rotate: 12,
+        scale: 1.08,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: scope,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.72,
+          invalidateOnRefresh: true,
+        },
+      })
       gsap.to(figure, {
         ease: 'none',
         motionPath: {
@@ -422,6 +442,9 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
 
   return (
     <div className="spider-world" ref={worldRef} data-tone="red" data-origin="right" data-direction="down" data-interaction="idle" aria-hidden="true">
+      <div className="spider-world__shadow-suit" ref={shadowRef} data-qa="background-spider-suit">
+        <div className="spider-world__shadow-inner"><SpiderFigure /></div>
+      </div>
       <canvas className="spider-world__canvas" ref={canvasRef} data-qa="reactive-web-canvas" />
       <div className="spider-world__sense" />
       <svg className="spider-world__route" viewBox="0 0 1000 1000" preserveAspectRatio="none">

@@ -481,6 +481,24 @@
   color: var(--drop-red);
 }
 
+.product-intro h2 .product-intro__inline-eyes {
+  width: 1.06em;
+  margin-inline: 0.08em;
+  display: inline-flex;
+  vertical-align: 0.04em;
+  color: var(--drop-red);
+  transform: rotate(-5deg);
+}
+
+.product-intro__inline-eyes .spider-eyes {
+  width: 100%;
+  height: auto;
+}
+
+.clarity-copy__word {
+  will-change: opacity;
+}
+
 .product-intro__copy > p {
   max-width: 48ch;
   margin: 28px 0 0;
@@ -1132,42 +1150,6 @@
   max-width: 28ch;
 }
 
-.drop-sticky {
-  appearance: none;
-  position: fixed;
-  inset-inline: 10px;
-  inset-block-end: calc(var(--safe-b) + 10px);
-  z-index: 28;
-  min-height: 58px;
-  padding: 0 17px;
-  border: 1px solid oklch(0.945 0.024 83 / 0.38);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  color: var(--drop-paper);
-  background: var(--drop-ink);
-  box-shadow: 0 10px 30px oklch(0.1 0.04 254 / 0.34);
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0;
-  transform: translateY(calc(100% + 28px));
-  pointer-events: none;
-  transition: opacity 260ms ease-out, transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.drop-sticky[data-visible='true'] {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.drop-sticky strong {
-  color: var(--drop-red-hot);
-}
-
 @media (max-width: 430px) and (max-height: 760px) {
   .drop-hero__issue { inset-block-start: calc(var(--safe-t) + 72px); }
   .drop-hero__product-name { inset-block-start: calc(var(--safe-t) + 88px); }
@@ -1357,7 +1339,6 @@
   .reserve-new__edition { max-width: 650px; }
 
   .drop-footer { padding-inline: max(var(--gutter), var(--safe-l)) max(var(--gutter), var(--safe-r)); }
-  .drop-sticky { display: none; }
 }
 
 @media (min-width: 1200px) {
@@ -1641,7 +1622,13 @@
 }
 
 .identity__headline {
-  font-size: clamp(3.15rem, 15vw, 11rem);
+  width: 100%;
+  margin-inline: 0;
+  font-size: clamp(2.75rem, 12vw, 11rem);
+}
+
+.identity__headline span {
+  width: auto;
 }
 
 .reserve-new {
@@ -1736,6 +1723,8 @@
   }
 
   .identity__headline {
+    width: 104%;
+    margin-inline: -2%;
     font-size: clamp(6.4rem, 12.5vw, 12rem);
   }
 
@@ -1769,6 +1758,8 @@
 
   .drop-hero__collector,
   .drop-hero__second-act { display: none; }
+
+  .clarity-copy__word { opacity: 1 !important; }
 
   .proofs {
     min-height: auto;

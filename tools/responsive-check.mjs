@@ -86,6 +86,13 @@ for (const width of widths) {
       filmWindow: rect('.drop-hero__video-wrap'),
       spiderWorld: rect('.spider-world'),
       spiderRunner: rect('[data-qa="scrolling-spider-man"]'),
+      backgroundSuit: rect('[data-qa="background-spider-suit"]'),
+      backgroundSuitOpacity: (() => {
+        const suit = document.querySelector('[data-qa="background-spider-suit"]')
+        return suit ? Number.parseFloat(getComputedStyle(suit).opacity) : 0
+      })(),
+      heroPurpose: document.querySelector('.drop-hero__action p')?.textContent?.trim() ?? '',
+      bodyHasEmDash: document.body.innerText.includes('—'),
       webCanvas: (() => {
         const canvas = document.querySelector('[data-qa="reactive-web-canvas"]')
         if (!(canvas instanceof HTMLCanvasElement)) return null
@@ -128,8 +135,13 @@ for (const width of widths) {
       metrics.webCanvas?.width >= width &&
       metrics.webCanvas?.height >= height &&
       metrics.webCanvas?.pointerEvents === 'none' &&
-      metrics.spiderRunner?.width > 50,
+      metrics.spiderRunner?.width > 50 &&
+      metrics.backgroundSuit?.width > 250 &&
+      metrics.backgroundSuitOpacity > 0,
   )
+  const purposeIsClear = metrics.heroPurpose.includes('500 numbered Spider-Man suits') &&
+    metrics.heroPurpose.includes('personal digital animation by Digitivia') &&
+    !metrics.bodyHasEmDash
 
   if (overflow) failures.push(`${width}px: horizontal overflow`)
   if (!heroCtaInFirstView) failures.push(`${width}px: primary CTA leaves first view`)
@@ -137,9 +149,10 @@ for (const width of widths) {
   if (!identityFits) failures.push(`${width}px: identity overflows`)
   if (!footerFits) failures.push(`${width}px: footer credit overflows`)
   if (!spiderWorldFits) failures.push(`${width}px: persistent Spider-Man world failed`)
+  if (!purposeIsClear) failures.push(`${width}px: product purpose copy is unclear`)
   if (runtimeErrors.length) failures.push(`${width}px: ${runtimeErrors.join(' | ')}`)
 
-  results.push({ width, height, overflow, heroCtaInFirstView, filmIsFullFrame, identityFits, footerFits, spiderWorldFits, runtimeErrors, metrics })
+  results.push({ width, height, overflow, heroCtaInFirstView, filmIsFullFrame, identityFits, footerFits, spiderWorldFits, purposeIsClear, runtimeErrors, metrics })
   if (captureDir && [320, 390, 430, 1440].includes(width)) {
     await page.screenshot({ path: path.join(captureDir, `hero-${width}.png`) })
     for (const [name, selector] of [['product', '#product'], ['powers', '.proofs'], ['identity', '#identity'], ['reserve', '#reserve']]) {
@@ -157,12 +170,14 @@ await flow.waitForTimeout(1700)
 const nativeTouch = await flow.evaluate(() => matchMedia('(pointer: coarse)').matches)
 const navReserveVisible = await flow.locator('.drop-nav__buy').isVisible()
 const runnerStartTransform = await flow.locator('[data-qa="scrolling-spider-man"]').evaluate((node) => getComputedStyle(node).transform)
+const backgroundSuitStartTransform = await flow.locator('[data-qa="background-spider-suit"]').evaluate((node) => getComputedStyle(node).transform)
 await flow.touchscreen.tap(195, 422)
 await flow.waitForTimeout(80)
 const touchReaction = await flow.locator('.spider-world').getAttribute('data-interaction')
 await flow.evaluate(() => document.getElementById('product')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(180)
 const runnerMidTransform = await flow.locator('[data-qa="scrolling-spider-man"]').evaluate((node) => getComputedStyle(node).transform)
+const backgroundSuitMidTransform = await flow.locator('[data-qa="background-spider-suit"]').evaluate((node) => getComputedStyle(node).transform)
 await flow.evaluate(() => document.querySelector('.proofs')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(260)
 const powerOrigin = await flow.locator('.spider-world').getAttribute('data-origin')
@@ -172,22 +187,23 @@ await flow.evaluate(() => document.getElementById('reserve')?.scrollIntoView({ b
 await flow.waitForTimeout(500)
 await flow.getByRole('button', { name: 'M', exact: true }).click()
 const selected = await flow.getByRole('button', { name: 'M', exact: true }).getAttribute('aria-pressed')
-const confirm = flow.getByRole('button', { name: /reserve this size/i })
+const confirm = flow.getByRole('button', { name: /reserve size m/i })
 const confirmEnabled = await confirm.isEnabled()
 await confirm.click()
 const confirmation = await flow.getByText(/Size M is held for this concept session/i).isVisible()
 await flow.evaluate(() => document.getElementById('product')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(500)
-const railVisibleMidPage = await flow.locator('.drop-sticky').getAttribute('data-visible')
+const navVisibleMidPage = await flow.locator('.drop-nav__buy').isVisible()
 await flow.evaluate(() => document.querySelector('footer')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(500)
-const railVisibleAtFooter = await flow.locator('.drop-sticky').getAttribute('data-visible')
+const navVisibleAtFooter = await flow.locator('.drop-nav__buy').isVisible()
 
 if (!nativeTouch || !navReserveVisible) failures.push('390px: mobile navigation or native touch failed')
 if (touchReaction !== 'touch' || runnerStartTransform === runnerMidTransform) failures.push('390px: Spider-Man touch or scroll reaction failed')
+if (backgroundSuitStartTransform === backgroundSuitMidTransform) failures.push('390px: background Spider-Man suit did not move with scroll')
 if (powerOrigin !== 'left' || maskEyeCount !== 2 || powerTabs.join(',') !== 'MASK,WEB,SENSE') failures.push('390px: radial web origin or mask power scene failed')
 if (selected !== 'true' || !confirmEnabled || !confirmation) failures.push('390px: reserve interaction failed')
-if (railVisibleMidPage !== 'true' || railVisibleAtFooter !== 'false') failures.push('390px: commerce rail boundary failed')
+if (!navVisibleMidPage || !navVisibleAtFooter) failures.push('390px: persistent commerce action failed')
 
 await flow.close()
 
@@ -216,14 +232,16 @@ console.log(JSON.stringify({
     touchReaction,
     runnerStartTransform,
     runnerMidTransform,
+    backgroundSuitStartTransform,
+    backgroundSuitMidTransform,
     powerOrigin,
     maskEyeCount,
     powerTabs,
     selected,
     confirmEnabled,
     confirmation,
-    railVisibleMidPage,
-    railVisibleAtFooter,
+    navVisibleMidPage,
+    navVisibleAtFooter,
   },
   reducedMotion,
   failures,

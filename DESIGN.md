@@ -21,12 +21,13 @@ The project borrows interaction principles, never source layouts or proprietary 
 - Media: the supplied 16:9 MP4 appears only in the hero and is never cropped.
 - Layout: film opening, Spider-Man identity statement, one three-state mask/web/sense sequence, Digitivia motion identity, size reservation, centered Digitivia footer moment.
 - Mobile: 320px minimum, native touch scrolling, safe-area padding, 52px minimum controls, no hover dependency, and a persistent reserve action between hero and checkout.
-- Persistent world: a full-body Spider-Man figure crosses the viewport through the entire document while a fixed canvas web field remains visible above every section background and below all controls.
+- Persistent world: a small full-body Spider-Man figure crosses the viewport while a second architectural-scale suit silhouette changes position behind each section. A fixed canvas web field connects both characters and remains below all controls.
+- Copy: the first viewport says this is a numbered physical Spider-Man suit, gives the $248 price and 500-unit limit, and explains that Digitivia adds a personal digital animation. Public sentences use familiar words, short clauses, and no em dashes.
 
 ## Motion
 
-- Hero: the supplied face film opens beneath the direct hook “Wear the mask. Move like Spider-Man.” and then transitions into an active Spider-Sense mask.
-- Character: one continuous curved GSAP motion path swings Spider-Man through every section; his limbs cycle between swing and crouch poses.
+- Hero: the supplied face film opens beneath the direct hook “Wear the suit. Be Spider-Man.” and then transitions into a numbered mask identity.
+- Character: one continuous curved GSAP motion path swings the foreground Spider-Man through every section. A larger full-suit silhouette moves slowly behind the page, shifts with each web origin, and responds to scroll, hover, and touch.
 - Product sequence: a close-cropped angular mask, live web, and Spider-Sense scenes stack through opacity and planar translation, with a three-state expanding power rail.
 - Environment: a curved radial web replaces the technical mesh. Its focal anchor moves by section, scroll velocity twists and tensions the silk, pointer hover pulls intersections toward the visitor, and touch creates an expanding connected web burst.
 - Identity: Spider-Sense traces draw with scroll while two headline lines move in opposing directions.

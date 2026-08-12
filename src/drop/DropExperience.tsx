@@ -14,21 +14,21 @@ gsap.registerPlugin(ScrollTrigger)
 const PROOFS = [
   {
     index: 'MASK',
-    label: 'The silhouette',
-    title: 'The eyes see first.',
-    body: 'Wide white lenses, a sharp brow, and web lines pulled around the face make the silhouette unmistakably Spider-Man.',
+    label: 'Suit design',
+    title: 'The classic mask.',
+    body: 'Large white eyes and a clear web pattern make the suit look like Spider-Man at first glance.',
   },
   {
     index: 'WEB',
-    label: 'The movement',
-    title: 'Every gesture throws a web.',
-    body: 'Scroll stretches the field. Hover pulls it closer. Touch sends a live web pulse through the whole experience.',
+    label: 'Website motion',
+    title: 'The web moves with you.',
+    body: 'Scroll, move, or tap. The background web reacts to what you do.',
   },
   {
     index: 'SENSE',
-    label: 'The identity',
-    title: 'Your edition has Spider-Sense.',
-    body: 'Digitivia turns each numbered suit into a personal motion signal that reacts before the page stands still.',
+    label: 'Digital extra',
+    title: 'Your own Spider-Sense.',
+    body: 'Your suit number includes a personal Spider-Sense animation created by Digitivia.',
   },
 ] as const
 
@@ -124,6 +124,18 @@ function SpiderEyes({ className = '' }: { className?: string }) {
   )
 }
 
+function ScrubWords({ text }: { text: string }) {
+  return (
+    <span className="clarity-copy" aria-label={text}>
+      {text.split(' ').map((word, index) => (
+        <Fragment key={`${word}-${index}`}>
+          <span className="clarity-copy__word" aria-hidden="true">{word}</span>{' '}
+        </Fragment>
+      ))}
+    </span>
+  )
+}
+
 const pad = (value: number) => String(value).padStart(2, '0')
 
 function useCountdown() {
@@ -155,7 +167,6 @@ export function DropExperience() {
   const reserved = useApp((state) => state.reserved)
   const reserve = useApp((state) => state.reserve)
   const countdown = useCountdown()
-  const [stickyVisible, setStickyVisible] = useState(false)
 
   useEffect(() => {
     const root = rootRef.current
@@ -212,6 +223,18 @@ export function DropExperience() {
         })
       })
 
+      gsap.fromTo('.clarity-copy__word', { opacity: 0.58 }, {
+        opacity: 1,
+        stagger: 0.075,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.product-intro__copy',
+          start: 'top 78%',
+          end: 'bottom 48%',
+          scrub: 0.45,
+        },
+      })
+
       const panels = gsap.utils.toArray<HTMLElement>('.proofs__panel')
       const visuals = gsap.utils.toArray<HTMLElement>('.proofs__visual-card')
       const powerTabs = gsap.utils.toArray<HTMLElement>('.proofs__power-tab')
@@ -255,34 +278,18 @@ export function DropExperience() {
         scrollTrigger: { trigger: '.identity', start: 'top 80%', end: 'bottom 70%', scrub: 0.6 },
       })
       gsap.to('.identity__word--one', {
-        xPercent: -12,
+        xPercent: () => window.innerWidth < 760 ? -3 : -12,
         ease: 'none',
         scrollTrigger: { trigger: '.identity', start: 'top bottom', end: 'bottom top', scrub: 0.7 },
       })
       gsap.to('.identity__word--two', {
-        xPercent: 13,
+        xPercent: () => window.innerWidth < 760 ? 3 : 13,
         ease: 'none',
         scrollTrigger: { trigger: '.identity', start: 'top bottom', end: 'bottom top', scrub: 0.7 },
       })
     }, root)
 
-    let ticking = false
-    const updateSticky = () => {
-      ticking = false
-      const heroBottom = root.querySelector('.drop-hero')?.getBoundingClientRect().bottom ?? 0
-      const reserveTop = root.querySelector('#reserve')?.getBoundingClientRect().top ?? 0
-      setStickyVisible(heroBottom < 80 && reserveTop > window.innerHeight * 0.55)
-    }
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true
-        requestAnimationFrame(updateSticky)
-      }
-    }
-    updateSticky()
-    window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
-      window.removeEventListener('scroll', onScroll)
       ctx.revert()
     }
   }, [])
@@ -300,28 +307,28 @@ export function DropExperience() {
       <nav className="drop-nav" aria-label="Main navigation">
         <a className="drop-nav__mark" href="#top" aria-label="The Web Suit home">
           <SpiderStamp />
-          <span>SPIDER-SENSE</span>
+          <span>THE WEB SUIT</span>
         </a>
         <div className="drop-nav__links">
-          <a href="#product">The suit</a>
-          <a href="#identity">The signal</a>
-          <a href="#reserve">Sizes</a>
+          <a href="#product">What you get</a>
+          <a href="#identity">Your animation</a>
+          <a href="#reserve">Choose a size</a>
         </div>
         <button type="button" className="drop-nav__buy" onClick={scrollToReserve}>
-          Reserve <span>{DROP.currency}{DROP.price}</span>
+          Choose size <span>{DROP.currency}{DROP.price}</span>
         </button>
       </nav>
 
       <section className="drop-hero" id="top" aria-labelledby="drop-hook" data-world-tone="red" data-world-origin="right">
         <div className="drop-hero__stage">
           <div className="drop-hero__issue" data-drop-intro>
-            <span>Spider-Man × Digitivia</span>
-            <span>Spider-Sense active</span>
+            <span>Limited Spider-Man suit</span>
+            <span>Only 500 made</span>
           </div>
-          <p className="drop-hero__product-name" data-drop-intro>The Web Suit / Spider-Man × Digitivia</p>
+          <p className="drop-hero__product-name" data-drop-intro>The Web Suit by Spider-Man and Digitivia</p>
           <h1 className="drop-hero__hook" id="drop-hook">
-            <span data-drop-intro>Wear the <em>mask.</em></span>
-            <span data-drop-intro>Move like Spider-Man.</span>
+            <span data-drop-intro>Wear the <em>suit.</em></span>
+            <span data-drop-intro>Be Spider-Man.</span>
           </h1>
           <div className="drop-hero__video-wrap">
             <video
@@ -342,24 +349,24 @@ export function DropExperience() {
           </div>
 
           <div className="drop-hero__collector" aria-hidden="true">
-            <div className="drop-hero__collector-head"><span>Spider-Sense</span><span>Signal 001</span></div>
+            <div className="drop-hero__collector-head"><span>Your suit number</span><span>001 of 500</span></div>
             <SpiderEyes className="drop-hero__collector-eyes" />
-            <small>Mask online / web field live</small>
+            <small>Personal animation included</small>
           </div>
 
           <div className="drop-hero__second-act" aria-hidden="true">
-            <span>Scroll / swing / sense</span>
-            <strong>He follows<br />every move.</strong>
+            <span>Scroll to see the suit</span>
+            <strong>Spider-Man moves<br />with you.</strong>
           </div>
 
           <div className="drop-hero__action" data-drop-intro>
-            <p>A physical Spider-Man suit with a personal web signal keyed to its numbered owner.</p>
+            <p>Buy one of 500 numbered Spider-Man suits. Your suit includes a personal digital animation by Digitivia.</p>
             <button type="button" onClick={scrollToReserve}>
-              <span>Claim your edition</span>
+              <span>Choose your size</span>
               <span aria-hidden="true">↘</span>
             </button>
           </div>
-          <p className="drop-hero__credit" data-drop-intro>Scroll and Spider-Man enters the world</p>
+          <p className="drop-hero__credit" data-drop-intro>Scroll to explore the suit</p>
           <div className="drop-hero__progress" aria-hidden="true"><span /></div>
         </div>
       </section>
@@ -368,7 +375,7 @@ export function DropExperience() {
         <div>
           {Array.from({ length: 4 }, (_, index) => (
             <Fragment key={index}>
-              <span>Spider-Man is moving</span><i>✳</i><span>Touch to throw a web</span><i>✳</i><span>Spider-Sense is live</span><i>✳</i>
+              <span>500 numbered suits</span><i>✳</i><span>$248 each</span><i>✳</i><span>Personal animation included</span><i>✳</i>
             </Fragment>
           ))}
         </div>
@@ -376,23 +383,27 @@ export function DropExperience() {
 
       <section className="product-intro" id="product" aria-labelledby="product-title" data-world-tone="light" data-world-origin="right">
         <SpiderEyes className="product-intro__eyes" />
-        <div className="product-intro__index" data-drop-reveal>Built in the Spider-Man silhouette</div>
+        <div className="product-intro__index" data-drop-reveal>What you get</div>
         <div className="product-intro__copy">
-          <h2 id="product-title" data-drop-reveal>Spider-Man.<br /><span>In every layer.</span></h2>
-          <p data-drop-reveal>The mask, the eyes, the web geometry, the acrobatic movement, and the Spider-Sense reaction system all belong to one collectible suit world.</p>
+          <h2 id="product-title" data-drop-reveal>
+            One suit.
+            <span className="product-intro__inline-eyes" aria-hidden="true"><SpiderEyes /></span>
+            <br /><span>One personal animation.</span>
+          </h2>
+          <p data-drop-reveal><ScrubWords text="You get a physical Spider-Man suit. Your suit number also includes a personal Digitivia animation." /></p>
         </div>
         <div className="product-intro__facts" data-drop-reveal>
-          <div data-spider-react><span>Mask</span><strong>White eyes</strong><small>Always watching</small></div>
-          <div data-spider-react><span>Web</span><strong>Live field</strong><small>Scroll, hover, touch</small></div>
-          <div data-spider-react><span>Sense</span><strong>1:1 signal</strong><small>Suit to owner</small></div>
+          <div data-spider-react><span>Physical suit</span><strong>Spider-Man</strong><small>Made to wear</small></div>
+          <div data-spider-react><span>Limited release</span><strong>500 suits</strong><small>Numbered 001 to 500</small></div>
+          <div data-spider-react><span>Digital extra</span><strong>Your animation</strong><small>Included with the suit</small></div>
         </div>
       </section>
 
       <section className="proofs" aria-labelledby="proofs-title" data-world-tone="dark" data-world-origin="left">
         <div className="proofs__stage">
           <div className="proofs__topline">
-            <p id="proofs-title">Three powers. One Spider-Man world.</p>
-            <span>Keep scrolling. He keeps moving.</span>
+            <p id="proofs-title">Three ways this feels like Spider-Man.</p>
+            <span>Scroll through all three.</span>
           </div>
           <div className="proofs__visuals" aria-hidden="true">
             <div className="proofs__visual-card" data-spider-react><MaskProof /></div>
@@ -417,19 +428,19 @@ export function DropExperience() {
 
       <section className="identity" id="identity" aria-labelledby="identity-title" data-world-tone="red" data-world-origin="center">
         <SpiderEyes className="identity__eyes" />
-        <p className="identity__eyebrow" data-drop-reveal>Digitivia turns the signal on</p>
+        <p className="identity__eyebrow" data-drop-reveal>Included with every suit</p>
         <h2 className="identity__headline" id="identity-title">
-          <span className="identity__word--one">Spider-Sense</span>
-          <span className="identity__word--two">is yours.</span>
+          <span className="identity__word--one">Your suit.</span>
+          <span className="identity__word--two">Your animation.</span>
         </h2>
         <svg className="identity__trace" viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
           <path pathLength="1" d="M-40 228C120 228 120 76 280 76s160 228 320 228S760 36 920 36s160 192 320 192" />
           <path pathLength="1" d="M-40 284c130 0 130-160 260-160s130 160 260 160 130-160 260-160 130 160 260 160 130-160 260-160" />
         </svg>
         <div className="identity__bottom">
-          <p data-drop-reveal>Edition 001 does not react like edition 500. Each serial becomes a distinct web rhythm that stretches, pulses, and follows its owner through the Digitivia layer.</p>
+          <p data-drop-reveal>Every suit has a number from 001 to 500. Digitivia turns that number into a personal Spider-Sense animation.</p>
           <div className="identity__sample" data-drop-reveal aria-label="Example motion identity 001">
-            <span>Spider-Sense identity</span><strong>001</strong><small>Web signal active</small>
+            <span>Your digital animation</span><strong>001</strong><small>Included with the suit</small>
           </div>
         </div>
       </section>
@@ -437,19 +448,19 @@ export function DropExperience() {
       <section className="reserve-new" id="reserve" aria-labelledby="reserve-new-title" data-world-tone="light" data-world-origin="right">
         <SpiderEyes className="reserve-new__eyes" />
         <div className="reserve-new__header">
-          <p data-drop-reveal>Five sizes. Five hundred suits.</p>
-          <h2 id="reserve-new-title" data-drop-reveal>Choose your fit.<br />Wear the mask.</h2>
+          <p data-drop-reveal>Only 500 suits</p>
+          <h2 id="reserve-new-title" data-drop-reveal>Choose your size.</h2>
         </div>
         <div className="reserve-new__layout">
           <div className="reserve-new__edition" data-drop-reveal data-spider-react aria-hidden="true">
-            <span>Mask access</span>
+            <span>Limited Spider-Man suit</span>
             <SpiderEyes />
-            <small>500 physical suits</small>
+            <small>Numbered 001 to 500</small>
           </div>
           <div className="reserve-new__form" data-drop-reveal>
             <div className="reserve-new__price"><span>The Web Suit</span><strong>{DROP.currency}{DROP.price}</strong></div>
             <fieldset>
-              <legend>Choose size <span>{selectedSize ? `Selected: ${selectedSize}` : 'Select one'}</span></legend>
+              <legend>Choose a size <span>{selectedSize ? `Selected: ${selectedSize}` : 'Select one'}</span></legend>
               <div className="reserve-new__sizes">
                 {DROP.sizes.map((size) => (
                   <button
@@ -464,7 +475,7 @@ export function DropExperience() {
               </div>
             </fieldset>
             <button className="reserve-new__confirm" type="button" disabled={!selectedSize || reserved} onClick={handleReserve}>
-              <span>{reserved ? `Size ${selectedSize} held` : 'Reserve this size'}</span>
+              <span>{reserved ? `Size ${selectedSize} held` : selectedSize ? `Reserve size ${selectedSize}` : 'Choose a size to reserve'}</span>
               <span aria-hidden="true">{reserved ? '✓' : '↗'}</span>
             </button>
             <div className="reserve-new__countdown" aria-label="Time until drop">
@@ -481,14 +492,11 @@ export function DropExperience() {
 
       <footer className="drop-footer" data-world-tone="dark" data-world-origin="left">
         <SpiderEyes className="drop-footer__eyes" />
-        <p>The suit is the object.<br />Digitivia builds the world around it.</p>
+        <p>You wear the Spider-Man suit.<br />Digitivia makes your number move.</p>
         <a href="https://digitivia.com" target="_blank" rel="noopener noreferrer">Digitivia</a>
-        <div><span>Fan-made concept. Not affiliated with Marvel or Sony.</span><span>Concept 2026</span></div>
+        <div><span>This is a fan-made concept. It is not affiliated with Marvel or Sony.</span><span>Concept 2026</span></div>
       </footer>
 
-      <button className="drop-sticky" type="button" data-visible={stickyVisible} onClick={scrollToReserve} tabIndex={stickyVisible ? 0 : -1}>
-        <span>Reserve / {DROP.runSize} made</span><strong>{DROP.currency}{DROP.price}</strong>
-      </button>
     </main>
   )
 }
