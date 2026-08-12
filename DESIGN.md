@@ -2,40 +2,38 @@
 
 ## Direction
 
-A nocturnal performance-film storefront: athletic, tensile, and precise. The supplied close-up flight video is the hero, not a background decoration. The rest of the page behaves like one continuous product reveal, moving from silhouette to anatomy to materials to the Digitivia ownership signal, then to size reservation.
+A performance apparel drop ticket crossed with a screen-print proof sheet. The experience is tactile, athletic, and numbered. It behaves like one concise product launch, not a movie archive, technical dashboard, or agency portfolio.
 
 ## Reference synthesis
 
-- GSAP Showcase: scroll progress is choreography, with clear pinning, stacking, and scale changes.
-- Bombon: layered two-dimensional media, split-word pacing, and long-form ecommerce theatre.
-- Codapress: editorial scale, character reveals, and a tactile horizontal collection rail.
-- Cobloc: introductory word choreography and sensory chapter transitions.
-- Square43: kinetic typography as the main spatial material rather than a model viewer.
+- PX PUSH: repeated kinetic statements, numbered chapters, and a continuous scrolling cadence.
+- Daoism Systems: small operational labels paired with one decisive statement per viewport.
+- GSAP Showcase: scroll progress changes composition and state instead of decorating static layouts.
+- Horizonte Village: restrained navigation and a single clear action within the opening scene.
 
-The project borrows principles, not layouts or proprietary assets.
+The project borrows interaction principles, never source layouts or proprietary assets.
 
 ## System
 
-- Theme: dark throughout, with signal red as the committed brand color and cold blue as a secondary environmental light.
-- Type: Antonio for condensed display statements; Outfit for commerce and reading text.
-- Shape: mostly square edges, hairline frames, tensile paths, signal nodes, and numbered edition geometry.
-- Media: the supplied MP4 in the hero only; all later visual material is native SVG and CSS motion.
-- Layout: full-viewport film, pinned procedural web engine, kinetic waveform tunnel, ownership statement, animated edition seal, split reserve close.
-- Mobile: 320px minimum, `100dvh`, safe-area padding, 52px minimum primary controls, no hover dependency, and a persistent purchase rail after the hero.
+- Palette: committed scarlet, warm paper, and deep ink blue. Each has a structural role.
+- Type: Bricolage Grotesque for expressive product statements; Manrope for commerce and reading text.
+- Shape: square film frames, proof sheets, barcodes, textile crosshatching, and horizontal signal traces.
+- Media: the supplied 16:9 MP4 appears only in the hero and is never cropped.
+- Layout: film opening, proposition, one three-state pinned proof, Digitivia motion identity, size reservation, centered Digitivia footer moment.
+- Mobile: 320px minimum, native touch scrolling, safe-area padding, 52px minimum controls, no hover dependency, and a persistent reserve action between hero and checkout.
 
 ## Motion
 
-- Hero: muted looping film, shutter-line entrance, staggered type entrance, and a scroll-linked pullback.
-- Web engine: a pinned procedural lattice that calibrates, tensions, and releases with scroll.
-- Motion material: a pinned vector waveform tunnel with optical, tensile, and signal states.
-- Signal: word-by-word scrubbed statement with a moving serial field and live pulse marker.
-- Reserve: an animated edition seal replaces all repeated product stills.
-- Reduced motion: static hero, static vector fields, no scanning motion, and instant word reveals.
+- Hero: horizontal film aperture, staggered product type, and a measured scroll pullback.
+- Product proof: three two-dimensional sheets exchange through opacity and planar translation.
+- Identity: serial traces draw with scroll while two headline lines move in opposing directions.
+- Reveals: short vertical entrances only when they establish reading order.
+- Reduced motion: static film poster, sequential proof copy, fixed headlines, and no ticker motion.
 
 ## Commerce
 
 - Price: $248.
 - Edition: 500 numbered units.
 - Sizes: XS through XL.
-- The hero reserve action moves to the size step.
+- Product, price, scarcity, and reserve action appear in the opening viewport.
 - The final confirmation is session-only and never collects payment.

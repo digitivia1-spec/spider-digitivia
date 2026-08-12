@@ -1,5 +1,5 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
   --bg: oklch(0.105 0.014 20);
   --bg-raised: oklch(0.15 0.018 20);
   --ink: oklch(0.965 0.008 25);
@@ -20,8 +20,8 @@
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-l: env(safe-area-inset-left, 0px);
   --safe-r: env(safe-area-inset-right, 0px);
-  --display: 'Antonio Variable', 'Arial Narrow', sans-serif;
-  --body: 'Outfit Variable', system-ui, sans-serif;
+  --display: 'Bricolage Grotesque Variable', sans-serif;
+  --body: 'Manrope Variable', system-ui, sans-serif;
   --container: 1240px;
   --gutter: clamp(18px, 4.2vw, 56px);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);

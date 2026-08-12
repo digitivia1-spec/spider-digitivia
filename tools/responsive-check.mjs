@@ -71,13 +71,13 @@ for (const width of widths) {
         clientWidth: document.documentElement.clientWidth,
         scrollHeight: document.documentElement.scrollHeight,
       },
-      nav: rect('.nav'),
-      identity: rect('.nav__identity'),
-      heroTitle: rect('.hero__title'),
-      heroCta: rect('.hero__cta'),
-      filmWindow: rect('.hero__film-window'),
+      nav: rect('.drop-nav'),
+      identity: rect('.drop-nav__mark'),
+      heroTitle: rect('.drop-hero__title'),
+      heroCta: rect('.drop-hero__action button'),
+      filmWindow: rect('.drop-hero__video-wrap'),
       film: (() => {
-        const video = document.querySelector('.hero__film')
+        const video = document.querySelector('.drop-hero__video')
         if (!(video instanceof HTMLVideoElement)) return null
         return {
           videoWidth: video.videoWidth,
@@ -85,8 +85,8 @@ for (const width of widths) {
           objectFit: getComputedStyle(video).objectFit,
         }
       })(),
-      sizeGrid: rect('.reserve__sizes'),
-      footerCredit: rect('.site-footer__digitivia strong'),
+      sizeGrid: rect('.reserve-new__sizes'),
+      footerCredit: rect('.drop-footer > a'),
     }
   })
 
@@ -117,29 +117,27 @@ for (const width of widths) {
   await page.close()
 }
 
-const flow = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 })
+const flow = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, hasTouch: true, isMobile: true })
 await flow.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
 await flow.waitForTimeout(1700)
-await flow.getByRole('button', { name: 'Open menu' }).click()
-const menuOpen = await flow.getByRole('button', { name: 'Close menu' }).getAttribute('aria-expanded')
-const drawerOpen = await flow.locator('.nav-drawer').getAttribute('data-open')
-await flow.getByRole('button', { name: 'Close menu' }).click()
+const nativeTouch = await flow.evaluate(() => matchMedia('(pointer: coarse)').matches)
+const navReserveVisible = await flow.locator('.drop-nav__buy').isVisible()
 await flow.evaluate(() => document.getElementById('reserve')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(500)
 await flow.getByRole('button', { name: 'M', exact: true }).click()
 const selected = await flow.getByRole('button', { name: 'M', exact: true }).getAttribute('aria-pressed')
-const confirm = flow.getByRole('button', { name: /confirm size/i })
+const confirm = flow.getByRole('button', { name: /reserve this size/i })
 const confirmEnabled = await confirm.isEnabled()
 await confirm.click()
 const confirmation = await flow.getByText(/Size M is held for this concept session/i).isVisible()
-await flow.evaluate(() => document.getElementById('anatomy')?.scrollIntoView({ behavior: 'instant' }))
+await flow.evaluate(() => document.getElementById('product')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(500)
-const railVisibleMidPage = await flow.locator('.sticky-bar').getAttribute('data-visible')
+const railVisibleMidPage = await flow.locator('.drop-sticky').getAttribute('data-visible')
 await flow.evaluate(() => document.querySelector('footer')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(500)
-const railVisibleAtFooter = await flow.locator('.sticky-bar').getAttribute('data-visible')
+const railVisibleAtFooter = await flow.locator('.drop-sticky').getAttribute('data-visible')
 
-if (menuOpen !== 'true' || drawerOpen !== 'true') failures.push('390px: mobile menu state failed')
+if (!nativeTouch || !navReserveVisible) failures.push('390px: mobile navigation or native touch failed')
 if (selected !== 'true' || !confirmEnabled || !confirmation) failures.push('390px: reserve interaction failed')
 if (railVisibleMidPage !== 'true' || railVisibleAtFooter !== 'false') failures.push('390px: commerce rail boundary failed')
 
@@ -165,8 +163,8 @@ if (server) await server.close()
 console.log(JSON.stringify({
   results,
   flow: {
-    menuOpen,
-    drawerOpen,
+    nativeTouch,
+    navReserveVisible,
     selected,
     confirmEnabled,
     confirmation,
