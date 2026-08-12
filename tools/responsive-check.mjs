@@ -73,7 +73,7 @@ for (const width of widths) {
       },
       nav: rect('.drop-nav'),
       identity: rect('.drop-nav__mark'),
-      heroTitle: rect('.drop-hero__title'),
+      heroTitle: rect('.drop-hero__hook'),
       heroCta: rect('.drop-hero__action button'),
       filmWindow: rect('.drop-hero__video-wrap'),
       film: (() => {

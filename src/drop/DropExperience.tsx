@@ -152,21 +152,23 @@ export function DropExperience() {
         .fromTo('.drop-hero__video-wrap', { clipPath: 'inset(0 50% 0 50%)' }, { clipPath: 'inset(0 0% 0 0%)', duration: 1.35 }, 0.12)
         .fromTo(intro, { y: 52, opacity: 0 }, { y: 0, opacity: 1, duration: 1.05, stagger: 0.08 }, 0.28)
 
-      gsap.to('.drop-hero__video', {
-        scale: 0.92,
-        ease: 'none',
-        scrollTrigger: { trigger: '.drop-hero', start: 'top top', end: 'bottom top', scrub: 0.5 },
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: '.drop-hero',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.55,
+        },
       })
-      gsap.to('.drop-hero__title span:first-child', {
-        xPercent: -9,
-        ease: 'none',
-        scrollTrigger: { trigger: '.drop-hero', start: 'top top', end: 'bottom top', scrub: 0.55 },
-      })
-      gsap.to('.drop-hero__title span:last-child', {
-        xPercent: 11,
-        ease: 'none',
-        scrollTrigger: { trigger: '.drop-hero', start: 'top top', end: 'bottom top', scrub: 0.55 },
-      })
+        .to('.drop-hero__progress span', { scaleX: 1, duration: 1 }, 0)
+        .to('.drop-hero__stage', { backgroundColor: 'oklch(0.185 0.046 254)', duration: 0.65 }, 0.08)
+        .to('.drop-hero__hook', { yPercent: -26, opacity: 0, duration: 0.34 }, 0.08)
+        .to('.drop-hero__issue, .drop-hero__product-name', { opacity: 0, duration: 0.26 }, 0.08)
+        .to('.drop-hero__video-wrap', { scale: 0.72, xPercent: 3, yPercent: -4, opacity: 0.42, duration: 0.65 }, 0.08)
+        .fromTo('.drop-hero__collector', { clipPath: 'inset(0 100% 0 0)', x: 42 }, { clipPath: 'inset(0 0% 0 0)', x: 0, opacity: 1, duration: 0.4 }, 0.36)
+        .fromTo('.drop-hero__second-act', { y: 54, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42 }, 0.42)
+        .set('.drop-hero__action button', { backgroundColor: 'oklch(0.62 0.252 27)', color: 'oklch(0.945 0.024 83)' }, 0.55)
+        .set('.drop-hero__credit', { color: 'oklch(0.945 0.024 83 / 0.58)' }, 0.55)
 
       gsap.utils.toArray<HTMLElement>('[data-drop-reveal]').forEach((element) => {
         gsap.fromTo(element, { y: 48, opacity: 0 }, {
@@ -266,40 +268,59 @@ export function DropExperience() {
         </button>
       </nav>
 
-      <section className="drop-hero" id="top" aria-labelledby="drop-title">
-        <div className="drop-hero__issue" data-drop-intro>
-          <span>Drop 001</span>
-          <span>500 total</span>
-        </div>
-        <h1 className="drop-hero__title" id="drop-title" aria-label="The Web Suit">
-          <span data-drop-intro>The web</span>
-          <span data-drop-intro>Suit</span>
-        </h1>
-        <div className="drop-hero__video-wrap">
-          <video
-            className="drop-hero__video"
-            src={heroFilm}
-            poster={heroPoster}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            aria-hidden="true"
-          />
-          <div className="drop-hero__video-meta" aria-hidden="true">
-            <span>Source film / 16:9</span>
-            <span>00:06.5</span>
+      <section className="drop-hero" id="top" aria-labelledby="drop-hook">
+        <div className="drop-hero__stage">
+          <div className="drop-hero__issue" data-drop-intro>
+            <span>Drop 001</span>
+            <span>Worldwide concept release</span>
           </div>
+          <p className="drop-hero__product-name" data-drop-intro>The Web Suit / Spider-Man × Digitivia</p>
+          <h1 className="drop-hero__hook" id="drop-hook">
+            <span data-drop-intro>Only <em>500</em></span>
+            <span data-drop-intro>get a number.</span>
+          </h1>
+          <div className="drop-hero__video-wrap">
+            <video
+              className="drop-hero__video"
+              src={heroFilm}
+              poster={heroPoster}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-hidden="true"
+            />
+            <div className="drop-hero__video-meta" aria-hidden="true">
+              <span>Source film / 16:9</span>
+              <span>00:06.5</span>
+            </div>
+          </div>
+
+          <div className="drop-hero__collector" aria-hidden="true">
+            <div className="drop-hero__collector-head"><span>Collector record</span><span>Drop 001</span></div>
+            <strong>001</strong>
+            <div className="drop-hero__collector-barcode">
+              {Array.from({ length: 24 }, (_, index) => <i key={index} />)}
+            </div>
+            <small>Edition 001 / 500</small>
+          </div>
+
+          <div className="drop-hero__second-act" aria-hidden="true">
+            <span>Scroll reveal / ownership</span>
+            <strong>The suit is physical.<br />The signal is yours.</strong>
+          </div>
+
+          <div className="drop-hero__action" data-drop-intro>
+            <p>One physical suit. One permanent serial. One motion identity keyed to its owner.</p>
+            <button type="button" onClick={scrollToReserve}>
+              <span>Claim your edition</span>
+              <span aria-hidden="true">↘</span>
+            </button>
+          </div>
+          <p className="drop-hero__credit" data-drop-intro>Scroll to reveal your record</p>
+          <div className="drop-hero__progress" aria-hidden="true"><span /></div>
         </div>
-        <div className="drop-hero__action" data-drop-intro>
-          <p>A numbered performance suit with a motion identity made for its owner.</p>
-          <button type="button" onClick={scrollToReserve}>
-            <span>Choose your size</span>
-            <span aria-hidden="true">↘</span>
-          </button>
-        </div>
-        <p className="drop-hero__credit" data-drop-intro>Spider-Man × Digitivia</p>
       </section>
 
       <div className="drop-ticker" aria-hidden="true">

@@ -111,14 +111,22 @@
 
 .drop-hero {
   position: relative;
-  min-height: 100svh;
-  min-height: 100dvh;
-  overflow: hidden;
+  min-height: 165svh;
+  min-height: 165dvh;
   color: var(--drop-paper);
   background: var(--drop-red);
 }
 
-.drop-hero::before {
+.drop-hero__stage {
+  position: sticky;
+  inset-block-start: 0;
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--drop-red);
+}
+
+.drop-hero__stage::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -141,9 +149,22 @@
   text-transform: uppercase;
 }
 
+.drop-hero__product-name {
+  position: absolute;
+  inset-block-start: calc(var(--safe-t) + 96px);
+  inset-inline: max(18px, var(--safe-l)) max(18px, var(--safe-r));
+  z-index: 4;
+  margin: 0;
+  color: var(--drop-paper);
+  font-size: 0.54rem;
+  font-weight: 760;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 .drop-hero__video-wrap {
   position: absolute;
-  inset-block-start: calc(var(--safe-t) + 105px);
+  inset-block-start: calc(var(--safe-t) + 116px);
   inset-inline-start: 50%;
   z-index: 2;
   width: calc(100% - 24px);
@@ -152,6 +173,8 @@
   background: var(--drop-ink);
   border: 1px solid oklch(0.945 0.024 83 / 0.45);
   transform: translateX(-50%);
+  transform-origin: right top;
+  will-change: transform, opacity;
 }
 
 .drop-hero__video {
@@ -181,31 +204,126 @@
   text-transform: uppercase;
 }
 
-.drop-hero__title {
+.drop-hero__hook {
   position: absolute;
-  inset-block-start: calc(var(--safe-t) + 103px + 56.25vw);
+  inset-block-start: calc(var(--safe-t) + 127px + 56.25vw);
   inset-inline: 14px;
-  z-index: 1;
+  z-index: 3;
   margin: 0;
   color: var(--drop-paper);
   font-family: var(--drop-display);
-  font-size: clamp(4.4rem, 23vw, 7rem);
+  font-size: clamp(2.9rem, 13.2vw, 5.2rem);
   font-weight: 780;
-  line-height: 0.75;
-  letter-spacing: -0.08em;
+  line-height: 0.8;
+  letter-spacing: -0.075em;
   text-transform: uppercase;
   pointer-events: none;
+  will-change: transform, opacity;
 }
 
-.drop-hero__title span {
+.drop-hero__hook span {
   display: block;
   width: max-content;
-  will-change: transform;
 }
 
-.drop-hero__title span:last-child {
+.drop-hero__hook span:first-child {
+  font-size: 1.24em;
+}
+
+.drop-hero__hook em {
+  color: var(--drop-ink);
+  font-style: normal;
+}
+
+.drop-hero__hook span:last-child {
   margin-inline-start: auto;
   color: var(--drop-ink);
+}
+
+.drop-hero__collector {
+  position: absolute;
+  inset-block-start: 16%;
+  inset-inline-end: max(18px, var(--safe-r));
+  z-index: 4;
+  width: min(58vw, 236px);
+  aspect-ratio: 4 / 3;
+  padding: 16px;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  color: var(--drop-ink);
+  background: var(--drop-paper);
+  box-shadow: 12px 14px 0 var(--drop-red);
+  opacity: 0;
+  will-change: transform, opacity, clip-path;
+}
+
+.drop-hero__collector-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.43rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.drop-hero__collector strong {
+  align-self: center;
+  font-family: var(--drop-display);
+  font-size: clamp(4.8rem, 25vw, 7rem);
+  font-weight: 780;
+  line-height: 0.7;
+  letter-spacing: -0.1em;
+}
+
+.drop-hero__collector-barcode {
+  height: 24px;
+  margin-bottom: 9px;
+  display: flex;
+  gap: 2px;
+}
+
+.drop-hero__collector-barcode i {
+  flex: 1;
+  background: var(--drop-ink);
+}
+
+.drop-hero__collector-barcode i:nth-child(3n) { flex-grow: 0.35; }
+.drop-hero__collector-barcode i:nth-child(4n) { flex-grow: 1.7; }
+
+.drop-hero__collector small,
+.drop-hero__second-act > span {
+  font-size: 0.48rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.drop-hero__second-act {
+  position: absolute;
+  inset-block-start: 47%;
+  inset-inline: max(18px, var(--safe-l)) max(18px, var(--safe-r));
+  z-index: 3;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.drop-hero__second-act > span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--drop-red-hot);
+}
+
+.drop-hero__second-act strong {
+  display: block;
+  max-width: 12ch;
+  color: var(--drop-paper);
+  font-family: var(--drop-display);
+  font-size: clamp(2.45rem, 11.5vw, 4.3rem);
+  font-weight: 720;
+  line-height: 0.86;
+  letter-spacing: -0.065em;
+  text-transform: uppercase;
 }
 
 .drop-hero__action {
@@ -235,8 +353,8 @@
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  color: var(--drop-paper);
-  background: var(--drop-ink);
+  color: var(--drop-ink);
+  background: var(--drop-paper);
   font-size: 0.7rem;
   font-weight: 820;
   letter-spacing: 0.08em;
@@ -245,7 +363,7 @@
 }
 
 .drop-hero__action button:hover {
-  background: var(--drop-ink-soft);
+  background: var(--drop-paper-dim);
 }
 
 .drop-hero__action button:active {
@@ -266,6 +384,23 @@
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.drop-hero__progress {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 5;
+  height: 4px;
+  background: oklch(0.945 0.024 83 / 0.2);
+}
+
+.drop-hero__progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--drop-paper);
+  transform: scaleX(0);
+  transform-origin: left;
 }
 
 .drop-ticker {
@@ -1034,11 +1169,13 @@
 
 @media (max-width: 430px) and (max-height: 760px) {
   .drop-hero__issue { inset-block-start: calc(var(--safe-t) + 72px); }
-  .drop-hero__video-wrap { inset-block-start: calc(var(--safe-t) + 92px); }
-  .drop-hero__title { inset-block-start: calc(var(--safe-t) + 89px + 56.25vw); font-size: clamp(4rem, 20vw, 5rem); }
+  .drop-hero__product-name { inset-block-start: calc(var(--safe-t) + 88px); }
+  .drop-hero__video-wrap { inset-block-start: calc(var(--safe-t) + 106px); }
+  .drop-hero__hook { inset-block-start: calc(var(--safe-t) + 117px + 56.25vw); font-size: clamp(2.65rem, 12.5vw, 3.35rem); }
   .drop-hero__action { inset-block-end: calc(var(--safe-b) + 58px); }
   .drop-hero__action p { margin-bottom: 11px; }
   .drop-hero__action button { min-height: 52px; }
+  .drop-hero__second-act { inset-block-start: 44%; }
   .proofs__visuals { inset-block-start: 16%; width: min(calc(100% - 50px), 300px); }
   .proofs__copy { inset-block-end: calc(var(--safe-b) + 70px); }
   .proofs__panel h3 { font-size: clamp(2.45rem, 11vw, 3.2rem); }
@@ -1089,6 +1226,14 @@
     width: 190px;
   }
 
+  .drop-hero__product-name {
+    inset-block-start: calc(var(--safe-t) + 108px);
+    inset-inline-start: auto;
+    inset-inline-end: max(var(--gutter), var(--safe-r));
+    width: min(60vw, 840px);
+    text-align: end;
+  }
+
   .drop-hero__video-wrap {
     inset-block-start: calc(var(--safe-t) + 96px);
     inset-inline-start: auto;
@@ -1097,16 +1242,38 @@
     transform: none;
   }
 
-  .drop-hero__title {
-    inset-block-start: 31%;
+  .drop-hero__hook {
+    inset-block-start: 30%;
     inset-inline: max(var(--gutter), var(--safe-l)) max(var(--gutter), var(--safe-r));
     z-index: 3;
-    font-size: clamp(8rem, 14.7vw, 14rem);
+    font-size: clamp(5.2rem, 10vw, 10.2rem);
   }
 
-  .drop-hero__title span:last-child {
-    margin-inline-start: 25%;
-    color: var(--drop-paper);
+  .drop-hero__hook span:last-child {
+    margin-inline-start: 16%;
+  }
+
+  .drop-hero__collector {
+    inset-block-start: 22%;
+    inset-inline-end: max(8vw, var(--safe-r));
+    width: min(27vw, 340px);
+    padding: 22px;
+    box-shadow: 18px 20px 0 var(--drop-red);
+  }
+
+  .drop-hero__collector strong { font-size: clamp(7rem, 11vw, 10rem); }
+  .drop-hero__collector-barcode { height: 38px; }
+
+  .drop-hero__second-act {
+    inset-block-start: 35%;
+    inset-inline-start: max(var(--gutter), var(--safe-l));
+    inset-inline-end: auto;
+    width: min(55vw, 760px);
+  }
+
+  .drop-hero__second-act strong {
+    max-width: 11ch;
+    font-size: clamp(4.5rem, 7.5vw, 7.8rem);
   }
 
   .drop-hero__action {
@@ -1200,8 +1367,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .drop-ticker > div { animation: none; }
+  .drop-hero { min-height: 100svh; min-height: 100dvh; }
+  .drop-hero__stage { position: relative; }
   .drop-hero__video,
-  .drop-hero__title span,
+  .drop-hero__hook,
+  .drop-hero__hook span,
   .identity__headline span,
   .identity__trace path,
   [data-drop-intro],
@@ -1209,6 +1379,9 @@
     opacity: 1 !important;
     transform: none !important;
   }
+
+  .drop-hero__collector,
+  .drop-hero__second-act { display: none; }
 
   .proofs {
     min-height: auto;

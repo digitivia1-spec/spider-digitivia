@@ -24,7 +24,7 @@ The project borrows interaction principles, never source layouts or proprietary 
 
 ## Motion
 
-- Hero: horizontal film aperture, staggered product type, and a measured scroll pullback.
+- Hero: scarcity hook, horizontal film aperture, then a pinned transition into a numbered collector record and ownership promise.
 - Product proof: three two-dimensional sheets exchange through opacity and planar translation.
 - Identity: serial traces draw with scroll while two headline lines move in opposing directions.
 - Reveals: short vertical entrances only when they establish reading order.
