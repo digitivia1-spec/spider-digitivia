@@ -7,7 +7,7 @@ import type { Size } from '../config/site'
 import { useApp } from '../state/store'
 import heroFilm from '../../113354-697718015_medium.mp4?url'
 import heroPoster from '../../src-assets/film/face-02.webp'
-import { SpiderWorld } from './SpiderWorld'
+import { SpiderFigure, SpiderWorld } from './SpiderWorld'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -124,6 +124,43 @@ function SpiderEyes({ className = '' }: { className?: string }) {
   )
 }
 
+function ZeroScene() {
+  return (
+    <div className="drop-zero" data-qa="zero-scene" aria-hidden="true">
+      <img className="drop-zero__film" src={heroPoster} alt="" />
+      <svg className="drop-zero__mask" viewBox="0 0 600 900" preserveAspectRatio="xMidYMid meet">
+        <g className="drop-zero__sense" fill="none">
+          <ellipse cx="300" cy="407" rx="237" ry="322" />
+          <ellipse cx="300" cy="407" rx="269" ry="362" />
+        </g>
+        <path className="drop-zero__head" d="M300 58C155 58 88 184 99 387c12 210 89 378 201 447 112-69 189-237 201-447C512 184 445 58 300 58Z" />
+        <g className="drop-zero__web" fill="none">
+          <path pathLength="1" d="M300 58v774M300 58C211 204 151 387 115 618M300 58c89 146 149 329 185 560M300 58C249 251 226 479 225 756M300 58c51 193 74 421 75 698" />
+          <path pathLength="1" d="M118 211Q300 339 482 211M99 363Q300 495 501 363M112 526Q300 641 488 526M159 683Q300 761 441 683" />
+        </g>
+        <g className="drop-zero__eyes">
+          <path d="M128 272c54-92 119-139 171-145-20 115-73 204-164 253-18-33-21-72-7-108Z" />
+          <path d="M472 272c-54-92-119-139-171-145 20 115 73 204 164 253 18-33 21-72 7-108Z" />
+        </g>
+        <g className="drop-zero__emblem">
+          <ellipse cx="300" cy="627" rx="14" ry="31" />
+          <path d="m289 608-58-45m56 66-72-10m75 31-61 48m82-90 58-45m-56 66 72-10m-75 31 61 48" />
+        </g>
+      </svg>
+      <div className="drop-zero__runner">
+        <span />
+        <SpiderFigure />
+      </div>
+      <div className="drop-zero__copy">
+        <span>The Web Suit</span>
+        <strong>Spider-Man<br />is here.</strong>
+        <small>A numbered suit with your own animation.</small>
+      </div>
+      <div className="drop-zero__meter"><span /><i /></div>
+    </div>
+  )
+}
+
 function ScrubWords({ text }: { text: string }) {
   return (
     <span className="clarity-copy" aria-label={text}>
@@ -187,13 +224,31 @@ export function DropExperience() {
       const intro = root.querySelectorAll<HTMLElement>('[data-drop-intro]')
       if (reduced) {
         gsap.set(intro, { opacity: 1, clearProps: 'transform' })
+        gsap.set('.drop-zero', { display: 'none' })
+        gsap.set('.drop-nav', { yPercent: 0 })
+        gsap.set('.drop-hero__video-wrap', { clipPath: 'inset(0)' })
         return
       }
 
       gsap.timeline({ defaults: { ease: 'expo.out' } })
-        .fromTo('.drop-nav', { yPercent: -110 }, { yPercent: 0, duration: 1 }, 0)
-        .fromTo('.drop-hero__video-wrap', { clipPath: 'inset(0 50% 0 50%)' }, { clipPath: 'inset(0 0% 0 0%)', duration: 1.35 }, 0.12)
-        .fromTo(intro, { y: 52, opacity: 0 }, { y: 0, opacity: 1, duration: 1.05, stagger: 0.08 }, 0.28)
+        .set('.drop-nav', { yPercent: -110 }, 0)
+        .set('.drop-hero__video-wrap', { clipPath: 'inset(0 50% 0 50%)' }, 0)
+        .set(intro, { y: 52, opacity: 0 }, 0)
+        .set('.drop-zero__web path', { strokeDasharray: 1, strokeDashoffset: 1 }, 0)
+        .set('.drop-zero__eyes', { scaleY: 0.04, transformOrigin: 'center' }, 0)
+        .fromTo('.drop-zero__mask', { scale: 0.93 }, { scale: 1.06, duration: 1.32, ease: 'power2.out' }, 0)
+        .to('.drop-zero__eyes', { scaleY: 1, duration: 0.38 }, 0.06)
+        .to('.drop-zero__web path', { strokeDashoffset: 0, duration: 0.82, stagger: 0.04 }, 0.08)
+        .fromTo('.drop-zero__sense ellipse', { scale: 0.82, opacity: 0 }, { scale: 1, opacity: 0.72, duration: 0.82, stagger: 0.08, transformOrigin: 'center' }, 0.1)
+        .fromTo('.drop-zero__runner', { xPercent: 120, yPercent: -42, rotate: 38 }, { xPercent: -215, yPercent: 178, rotate: -34, duration: 1.38, ease: 'power2.inOut' }, 0.12)
+        .to('.drop-zero__meter i', { scaleX: 1, duration: 1.12, ease: 'none' }, 0.08)
+        .to('.drop-zero__film', { scale: 1.06, opacity: 0.56, duration: 1.22, ease: 'power2.out' }, 0)
+        .to('.drop-zero__copy', { y: -14, opacity: 0, duration: 0.36 }, 1.06)
+        .to('.drop-zero', { clipPath: 'circle(0% at 50% 42%)', duration: 0.78, ease: 'power3.inOut' }, 1.16)
+        .to('.drop-nav', { yPercent: 0, duration: 0.84 }, 1.18)
+        .to('.drop-hero__video-wrap', { clipPath: 'inset(0 0% 0 0%)', duration: 1.02 }, 1.22)
+        .to(intro, { y: 0, opacity: 1, duration: 0.9, stagger: 0.06 }, 1.38)
+        .set('.drop-zero', { display: 'none' }, 1.98)
 
       gsap.timeline({
         scrollTrigger: {
@@ -321,11 +376,12 @@ export function DropExperience() {
 
       <section className="drop-hero" id="top" aria-labelledby="drop-hook" data-world-tone="red" data-world-origin="right">
         <div className="drop-hero__stage">
+          <ZeroScene />
           <div className="drop-hero__issue" data-drop-intro>
-            <span>Limited Spider-Man suit</span>
+            <span>Fan-made Brand New Day suit</span>
             <span>Only 500 made</span>
           </div>
-          <p className="drop-hero__product-name" data-drop-intro>The Web Suit by Spider-Man and Digitivia</p>
+          <p className="drop-hero__product-name" data-drop-intro>The Web Suit. A fan-made Spider-Man experience by Digitivia.</p>
           <h1 className="drop-hero__hook" id="drop-hook">
             <span data-drop-intro>Wear the <em>suit.</em></span>
             <span data-drop-intro>Be Spider-Man.</span>
@@ -360,7 +416,7 @@ export function DropExperience() {
           </div>
 
           <div className="drop-hero__action" data-drop-intro>
-            <p>Buy one of 500 numbered Spider-Man suits. Your suit includes a personal digital animation by Digitivia.</p>
+            <p>Choose one of 500 numbered Spider-Man suits. Every suit comes with its own Digitivia animation.</p>
             <button type="button" onClick={scrollToReserve}>
               <span>Choose your size</span>
               <span aria-hidden="true">↘</span>
@@ -375,7 +431,7 @@ export function DropExperience() {
         <div>
           {Array.from({ length: 4 }, (_, index) => (
             <Fragment key={index}>
-              <span>500 numbered suits</span><i>✳</i><span>$248 each</span><i>✳</i><span>Personal animation included</span><i>✳</i>
+              <span>500 numbered suits</span><i>✳</i><span>$248 each</span><i>✳</i><span>Your own animation included</span><i>✳</i>
             </Fragment>
           ))}
         </div>
@@ -390,7 +446,7 @@ export function DropExperience() {
             <span className="product-intro__inline-eyes" aria-hidden="true"><SpiderEyes /></span>
             <br /><span>One personal animation.</span>
           </h2>
-          <p data-drop-reveal><ScrubWords text="You get a physical Spider-Man suit. Your suit number also includes a personal Digitivia animation." /></p>
+          <p data-drop-reveal><ScrubWords text="You get a Spider-Man suit you can wear. Your suit number also comes with its own Digitivia animation." /></p>
         </div>
         <div className="product-intro__facts" data-drop-reveal>
           <div data-spider-react><span>Physical suit</span><strong>Spider-Man</strong><small>Made to wear</small></div>
@@ -402,7 +458,7 @@ export function DropExperience() {
       <section className="proofs" aria-labelledby="proofs-title" data-world-tone="dark" data-world-origin="left">
         <div className="proofs__stage">
           <div className="proofs__topline">
-            <p id="proofs-title">Three ways this feels like Spider-Man.</p>
+            <p id="proofs-title">Three parts of your Spider-Man experience.</p>
             <span>Scroll through all three.</span>
           </div>
           <div className="proofs__visuals" aria-hidden="true">
@@ -438,7 +494,7 @@ export function DropExperience() {
           <path pathLength="1" d="M-40 284c130 0 130-160 260-160s130 160 260 160 130-160 260-160 130 160 260 160 130-160 260-160" />
         </svg>
         <div className="identity__bottom">
-          <p data-drop-reveal>Every suit has a number from 001 to 500. Digitivia turns that number into a personal Spider-Sense animation.</p>
+          <p data-drop-reveal>Every suit has a number from 001 to 500. Digitivia turns your number into an animation made for you.</p>
           <div className="identity__sample" data-drop-reveal aria-label="Example motion identity 001">
             <span>Your digital animation</span><strong>001</strong><small>Included with the suit</small>
           </div>
@@ -484,7 +540,7 @@ export function DropExperience() {
               ))}
             </div>
             <p className="reserve-new__note" role="status" aria-live="polite">
-              {reserved ? `Size ${selectedSize} is held for this concept session.` : 'Concept checkout only. No payment is collected.'}
+              {reserved ? `Size ${selectedSize} is saved for this preview.` : 'Demo checkout. You will not be charged.'}
             </p>
           </div>
         </div>
@@ -492,7 +548,7 @@ export function DropExperience() {
 
       <footer className="drop-footer" data-world-tone="dark" data-world-origin="left">
         <SpiderEyes className="drop-footer__eyes" />
-        <p>You wear the Spider-Man suit.<br />Digitivia makes your number move.</p>
+        <p>You wear the Spider-Man suit.<br />Digitivia brings your number to life.</p>
         <a href="https://digitivia.com" target="_blank" rel="noopener noreferrer">Digitivia</a>
         <div><span>This is a fan-made concept. It is not affiliated with Marvel or Sony.</span><span>Concept 2026</span></div>
       </footer>

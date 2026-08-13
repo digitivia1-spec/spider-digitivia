@@ -43,7 +43,7 @@ const ORIGINS: Record<WorldOrigin, [number, number]> = {
   right: [0.84, 0.36],
 }
 
-function SpiderFigure() {
+export function SpiderFigure() {
   return (
     <svg className="spider-figure__art" viewBox="0 0 190 330" aria-hidden="true">
       <g className="spider-figure__body">
@@ -69,9 +69,11 @@ function SpiderFigure() {
         <path className="spider-figure__torso" d="M72 102c10-8 35-8 45 2 7 18 4 43-5 58-10 16-28 15-38-1-10-16-12-41-2-59Z" />
         <path className="spider-figure__neck" d="M82 90h24l3 20H79Z" />
 
-        <path className="spider-figure__head" d="M68 49C71 19 87 5 98 5c15 0 31 18 32 45 1 25-13 47-32 48-20 0-33-23-30-49Z" />
-        <path className="spider-figure__eye" d="M79 46c3-15 9-24 15-29-1 19-5 31-14 39Z" />
-        <path className="spider-figure__eye" d="M116 45c-3-15-9-23-16-28 2 19 6 31 15 39Z" />
+        <g className="spider-figure__mask">
+          <path className="spider-figure__head" d="M68 49C71 19 87 5 98 5c15 0 31 18 32 45 1 25-13 47-32 48-20 0-33-23-30-49Z" />
+          <path className="spider-figure__eye" d="M79 46c3-15 9-24 15-29-1 19-5 31-14 39Z" />
+          <path className="spider-figure__eye" d="M116 45c-3-15-9-23-16-28 2 19 6 31 15 39Z" />
+        </g>
 
         <g className="spider-figure__web" fill="none">
           <path d="M98 7v87M72 39c17 9 35 9 55 0M69 61c18 10 39 10 59 0M75 81c15 8 30 8 46 0" />
@@ -300,6 +302,11 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       world.style.setProperty('--sense-x', `${pointer.x}px`)
       world.style.setProperty('--sense-y', `${pointer.y}px`)
       world.style.setProperty('--web-tension', tension.toFixed(3))
+      const lookX = (pointer.x / width - 0.5) * 7
+      const lookY = (pointer.y / height - 0.5) * 5
+      world.style.setProperty('--spider-look-x', `${lookX.toFixed(2)}px`)
+      world.style.setProperty('--spider-look-y', `${lookY.toFixed(2)}px`)
+      world.style.setProperty('--spider-look-r', `${(lookX * 0.55).toFixed(2)}deg`)
       if (!reduced) frame = window.requestAnimationFrame(draw)
     }
 
@@ -319,6 +326,7 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       pointer.active = true
       pulses.push({ x: event.clientX, y: event.clientY, radius: 8, life: 1 })
       setInteraction('touch')
+      if (event.pointerType !== 'mouse' && 'vibrate' in navigator) navigator.vibrate(12)
       window.clearTimeout(pointerTimer)
       pointerTimer = window.setTimeout(() => { pointer.active = false }, 1200)
       gsap.fromTo(figure, { scale: 0.86 }, { scale: 1, duration: 0.58, ease: 'expo.out', overwrite: 'auto' })

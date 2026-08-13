@@ -4,6 +4,9 @@
   --web-tension: 0;
   --web-origin-x: 84%;
   --web-origin-y: 36%;
+  --spider-look-x: 0px;
+  --spider-look-y: 0px;
+  --spider-look-r: 0deg;
   position: fixed;
   inset: 0;
   z-index: 6;
@@ -252,6 +255,13 @@
   animation: spider-breathe 1.8s ease-in-out infinite alternate;
 }
 
+.spider-figure__mask {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: translate3d(var(--spider-look-x), var(--spider-look-y), 0) rotate(var(--spider-look-r));
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .spider-figure__pose-arm,
 .spider-figure__pose-leg {
   transform-box: view-box;
@@ -401,5 +411,10 @@
   .spider-world__shadow-inner {
     transition: none;
     transform: none !important;
+  }
+
+  .spider-figure__mask {
+    transform: none !important;
+    transition: none;
   }
 }

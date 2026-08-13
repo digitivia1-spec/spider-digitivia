@@ -47,7 +47,7 @@ for (const width of widths) {
   })
 
   await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
-  await page.waitForTimeout(1700)
+  await page.waitForTimeout(2300)
   await page.locator('.drop-hero__video').evaluate((video) => new Promise((resolve) => {
     if (video instanceof HTMLVideoElement && video.videoWidth > 0) return resolve(true)
     const timer = window.setTimeout(() => resolve(false), 5000)
@@ -92,7 +92,7 @@ for (const width of widths) {
         return suit ? Number.parseFloat(getComputedStyle(suit).opacity) : 0
       })(),
       heroPurpose: document.querySelector('.drop-hero__action p')?.textContent?.trim() ?? '',
-      bodyHasEmDash: document.body.innerText.includes('—'),
+      bodyHasEmDash: document.body.innerText.includes('\u2014'),
       webCanvas: (() => {
         const canvas = document.querySelector('[data-qa="reactive-web-canvas"]')
         if (!(canvas instanceof HTMLCanvasElement)) return null
@@ -140,7 +140,7 @@ for (const width of widths) {
       metrics.backgroundSuitOpacity > 0,
   )
   const purposeIsClear = metrics.heroPurpose.includes('500 numbered Spider-Man suits') &&
-    metrics.heroPurpose.includes('personal digital animation by Digitivia') &&
+    metrics.heroPurpose.includes('Every suit comes with its own Digitivia animation') &&
     !metrics.bodyHasEmDash
 
   if (overflow) failures.push(`${width}px: horizontal overflow`)
@@ -166,14 +166,33 @@ for (const width of widths) {
 
 const flow = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, hasTouch: true, isMobile: true })
 await flow.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
-await flow.waitForTimeout(1700)
+const zeroScene = await flow.evaluate(() => {
+  const zero = document.querySelector('[data-qa="zero-scene"]')
+  const mask = document.querySelector('.drop-zero__mask')
+  if (!(zero instanceof HTMLElement) || !(mask instanceof SVGElement)) return null
+  const maskBox = mask.getBoundingClientRect()
+  return {
+    display: getComputedStyle(zero).display,
+    copy: zero.textContent?.replace(/\s+/g, ' ').trim() ?? '',
+    maskWidth: Math.round(maskBox.width),
+    scrollLocked: getComputedStyle(document.body).overflow === 'hidden',
+  }
+})
+await flow.waitForTimeout(2300)
+const zeroSceneSettled = await flow.evaluate(() => ({
+  display: getComputedStyle(document.querySelector('[data-qa="zero-scene"]')).display,
+  navVisible: Boolean(document.querySelector('.drop-nav')?.getBoundingClientRect().height),
+  heroVisible: Boolean(document.querySelector('.drop-hero__action button')?.getBoundingClientRect().height),
+}))
 const nativeTouch = await flow.evaluate(() => matchMedia('(pointer: coarse)').matches)
 const navReserveVisible = await flow.locator('.drop-nav__buy').isVisible()
 const runnerStartTransform = await flow.locator('[data-qa="scrolling-spider-man"]').evaluate((node) => getComputedStyle(node).transform)
 const backgroundSuitStartTransform = await flow.locator('[data-qa="background-spider-suit"]').evaluate((node) => getComputedStyle(node).transform)
-await flow.touchscreen.tap(195, 422)
-await flow.waitForTimeout(80)
+const maskStartTransform = await flow.locator('[data-qa="scrolling-spider-man"] .spider-figure__mask').evaluate((node) => getComputedStyle(node).transform)
+await flow.touchscreen.tap(330, 180)
+await flow.waitForTimeout(120)
 const touchReaction = await flow.locator('.spider-world').getAttribute('data-interaction')
+const maskTouchTransform = await flow.locator('[data-qa="scrolling-spider-man"] .spider-figure__mask').evaluate((node) => getComputedStyle(node).transform)
 await flow.evaluate(() => document.getElementById('product')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(180)
 const runnerMidTransform = await flow.locator('[data-qa="scrolling-spider-man"]').evaluate((node) => getComputedStyle(node).transform)
@@ -190,7 +209,7 @@ const selected = await flow.getByRole('button', { name: 'M', exact: true }).getA
 const confirm = flow.getByRole('button', { name: /reserve size m/i })
 const confirmEnabled = await confirm.isEnabled()
 await confirm.click()
-const confirmation = await flow.getByText(/Size M is held for this concept session/i).isVisible()
+const confirmation = await flow.getByText(/Size M is saved for this preview/i).isVisible()
 await flow.evaluate(() => document.getElementById('product')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(500)
 const navVisibleMidPage = await flow.locator('.drop-nav__buy').isVisible()
@@ -199,7 +218,10 @@ await flow.waitForTimeout(500)
 const navVisibleAtFooter = await flow.locator('.drop-nav__buy').isVisible()
 
 if (!nativeTouch || !navReserveVisible) failures.push('390px: mobile navigation or native touch failed')
+if (!zeroScene || zeroScene.display === 'none' || !zeroScene.copy.includes('Spider-Man') || !zeroScene.copy.includes('is here') || zeroScene.maskWidth < 250 || zeroScene.scrollLocked) failures.push('390px: immediate Spider-Man zero scene failed')
+if (zeroSceneSettled.display !== 'none' || !zeroSceneSettled.navVisible || !zeroSceneSettled.heroVisible) failures.push('390px: zero scene did not hand off cleanly to the hero')
 if (touchReaction !== 'touch' || runnerStartTransform === runnerMidTransform) failures.push('390px: Spider-Man touch or scroll reaction failed')
+if (maskStartTransform === maskTouchTransform) failures.push('390px: Spider-Man mask did not follow touch')
 if (backgroundSuitStartTransform === backgroundSuitMidTransform) failures.push('390px: background Spider-Man suit did not move with scroll')
 if (powerOrigin !== 'left' || maskEyeCount !== 2 || powerTabs.join(',') !== 'MASK,WEB,SENSE') failures.push('390px: radial web origin or mask power scene failed')
 if (selected !== 'true' || !confirmEnabled || !confirmation) failures.push('390px: reserve interaction failed')
@@ -215,8 +237,10 @@ const reducedMotion = await reducedPage.evaluate(() => ({
   preferenceMatches: matchMedia('(prefers-reduced-motion: reduce)').matches,
   videoPaused: document.querySelector('video')?.paused ?? false,
   loaderAbsent: !document.querySelector('.loader'),
+  zeroSceneHidden: getComputedStyle(document.querySelector('[data-qa="zero-scene"]')).display === 'none',
+  navVisible: Boolean(document.querySelector('.drop-nav')?.getBoundingClientRect().height),
 }))
-if (!reducedMotion.preferenceMatches || !reducedMotion.videoPaused || !reducedMotion.loaderAbsent) {
+if (!reducedMotion.preferenceMatches || !reducedMotion.videoPaused || !reducedMotion.loaderAbsent || !reducedMotion.zeroSceneHidden || !reducedMotion.navVisible) {
   failures.push('390px: reduced-motion fallback failed')
 }
 await reducedPage.close()
@@ -229,7 +253,11 @@ console.log(JSON.stringify({
   flow: {
     nativeTouch,
     navReserveVisible,
+    zeroScene,
+    zeroSceneSettled,
     touchReaction,
+    maskStartTransform,
+    maskTouchTransform,
     runnerStartTransform,
     runnerMidTransform,
     backgroundSuitStartTransform,
