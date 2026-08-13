@@ -18,7 +18,7 @@ The project borrows interaction principles, never source layouts or proprietary 
 
 - Palette: committed scarlet, warm paper, and deep ink blue. Each has a structural role.
 - Type: Cabinet Grotesk for expressive product statements; Manrope for commerce and reading text; Geist for compact motion telemetry.
-- Shape: one original mask system is reused everywhere. It has a human cranial dome, visible temples, cheek and jaw breaks, a pointed chin, large swept white lenses, one dark lens frame, and a continuous facial web. It preserves the core spider-hero reading without copying an official mask path.
+- Shape: one original mask system is reused everywhere. Its proportions are checked against Sony's official Brand New Day close-up: a human cranial dome, visible temples, compressed cheeks, a rounded jaw, low swept white lenses, layered dark bezels, and a face-wrapping web. The implementation derives those identity-defining proportions without embedding official artwork.
 - Media: the supplied 16:9 MP4 appears in the opening transition and hero and is never cropped.
 - Layout: film opening, Spider-Man identity statement, one three-state mask/web/sense sequence, Digitivia motion identity, size reservation, centered Digitivia footer moment.
 - Mobile: 320px minimum, native touch scrolling, safe-area padding, 52px minimum controls, no hover dependency, and a persistent reserve action between hero and checkout.

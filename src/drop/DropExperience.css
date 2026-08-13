@@ -212,6 +212,13 @@
   stroke-linejoin: round;
 }
 
+.drop-zero .mask-art__bezel {
+  fill: oklch(0.25 0.07 254);
+  stroke: oklch(0.945 0.024 83 / 0.34);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
 .drop-zero .mask-art__lens {
   fill: var(--drop-paper);
   stroke: var(--drop-ink);
@@ -1607,6 +1614,13 @@
   stroke-linejoin: round;
 }
 
+.spider-eyes .mask-art__bezel {
+  fill: oklch(0.25 0.07 254);
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
 .spider-eyes .mask-art__lens {
   fill: var(--drop-paper);
   stroke: var(--drop-ink);
@@ -1677,7 +1691,7 @@
 
 .proof-graphic--mask .mask-art__head {
   fill: var(--drop-red);
-  stroke: var(--drop-paper);
+  stroke: oklch(0.945 0.024 83 / 0.38);
   stroke-width: 4;
   vector-effect: non-scaling-stroke;
 }
@@ -1716,6 +1730,13 @@
   fill: var(--drop-ink);
   stroke: var(--drop-ink);
   stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.proof-graphic--mask .mask-art__bezel {
+  fill: oklch(0.25 0.07 254);
+  stroke: oklch(0.945 0.024 83 / 0.34);
+  stroke-width: 2.5;
   stroke-linejoin: round;
 }
 
@@ -1762,7 +1783,7 @@
 
 .proof-graphic--signal .mask-art__head {
   fill: var(--drop-red);
-  stroke: var(--drop-paper);
+  stroke: oklch(0.945 0.024 83 / 0.42);
   stroke-width: 14;
 }
 
@@ -1782,6 +1803,13 @@
   fill: var(--drop-ink);
   stroke: var(--drop-paper);
   stroke-width: 14;
+}
+
+.proof-graphic--signal .mask-art__bezel {
+  fill: oklch(0.25 0.07 254);
+  stroke: var(--drop-red);
+  stroke-width: 8;
+  stroke-linejoin: round;
 }
 
 .proof-graphic--signal .mask-art__lens {

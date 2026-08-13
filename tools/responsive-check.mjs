@@ -189,6 +189,8 @@ const maskSystem = await flow.evaluate(() => {
   const heads = values('[data-qa="mask-artwork"] .mask-art__head')
   const leftLenses = values('.mask-art__lens--left')
   const rightLenses = values('.mask-art__lens--right')
+  const leftBezels = values('.mask-art__bezel--left')
+  const rightBezels = values('.mask-art__bezel--right')
   return {
     artworkCount: document.querySelectorAll('[data-qa="mask-artwork"]').length,
     uniqueHeadPaths: new Set(heads).size,
@@ -196,6 +198,10 @@ const maskSystem = await flow.evaluate(() => {
     rightLensCount: rightLenses.length,
     uniqueLeftLensPaths: new Set(leftLenses).size,
     uniqueRightLensPaths: new Set(rightLenses).size,
+    leftBezelCount: leftBezels.length,
+    rightBezelCount: rightBezels.length,
+    uniqueLeftBezelPaths: new Set(leftBezels).size,
+    uniqueRightBezelPaths: new Set(rightBezels).size,
   }
 })
 await flow.waitForTimeout(2300)
@@ -238,8 +244,8 @@ await flow.waitForTimeout(500)
 const navVisibleAtFooter = await flow.locator('.drop-nav__buy').isVisible()
 
 if (!nativeTouch || !navReserveVisible) failures.push('390px: mobile navigation or native touch failed')
-if (!zeroScene || zeroScene.display === 'none' || !zeroScene.copy.includes('Spider-Man') || !zeroScene.copy.includes('is here') || zeroScene.maskWidth < 250 || !zeroScene.headAspect || zeroScene.headAspect < 0.67 || zeroScene.headAspect > 0.75 || !zeroScene.lensAspect || zeroScene.lensAspect > 0.75 || zeroScene.scrollLocked) failures.push('390px: immediate Spider-Man zero scene failed')
-if (maskSystem.artworkCount !== 6 || maskSystem.uniqueHeadPaths !== 1 || maskSystem.leftLensCount !== maskSystem.rightLensCount || maskSystem.leftLensCount < 12 || maskSystem.uniqueLeftLensPaths !== 1 || maskSystem.uniqueRightLensPaths !== 1) failures.push('390px: unified Spider-Man mask geometry failed')
+if (!zeroScene || zeroScene.display === 'none' || !zeroScene.copy.includes('Spider-Man') || !zeroScene.copy.includes('is here') || zeroScene.maskWidth < 250 || !zeroScene.headAspect || zeroScene.headAspect < 0.74 || zeroScene.headAspect > 0.8 || !zeroScene.lensAspect || zeroScene.lensAspect < 0.94 || zeroScene.lensAspect > 1.16 || zeroScene.scrollLocked) failures.push('390px: immediate Spider-Man zero scene failed')
+if (maskSystem.artworkCount !== 6 || maskSystem.uniqueHeadPaths !== 1 || maskSystem.leftLensCount !== maskSystem.rightLensCount || maskSystem.leftLensCount < 12 || maskSystem.uniqueLeftLensPaths !== 1 || maskSystem.uniqueRightLensPaths !== 1 || maskSystem.leftBezelCount !== maskSystem.rightBezelCount || maskSystem.leftBezelCount !== maskSystem.leftLensCount || maskSystem.uniqueLeftBezelPaths !== 1 || maskSystem.uniqueRightBezelPaths !== 1) failures.push('390px: unified Spider-Man mask geometry failed')
 if (zeroSceneSettled.display !== 'none' || !zeroSceneSettled.navVisible || !zeroSceneSettled.heroVisible) failures.push('390px: zero scene did not hand off cleanly to the hero')
 if (touchReaction !== 'touch' || runnerStartTransform === runnerMidTransform) failures.push('390px: Spider-Man touch or scroll reaction failed')
 if (maskStartTransform === maskTouchTransform) failures.push('390px: Spider-Man mask did not follow touch')

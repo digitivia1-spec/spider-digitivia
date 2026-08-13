@@ -90,6 +90,12 @@
   stroke: currentColor;
 }
 
+.spider-world__shadow-suit .spider-figure__mask-art .mask-art__bezel {
+  fill: currentColor;
+  stroke: oklch(0.945 0.024 83 / 0.28);
+  stroke-width: 3;
+}
+
 .spider-world__shadow-suit .spider-figure__mask-art .mask-art__lens {
   fill: oklch(0.945 0.024 83);
   stroke: currentColor;
@@ -335,6 +341,14 @@
   fill: #071633;
   stroke: #071633;
   stroke-width: 2.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spider-figure__mask-art .mask-art__bezel {
+  fill: #102f68;
+  stroke: rgba(255, 244, 230, 0.35);
+  stroke-width: 1.2;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
