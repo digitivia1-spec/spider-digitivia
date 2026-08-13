@@ -169,13 +169,33 @@ await flow.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
 const zeroScene = await flow.evaluate(() => {
   const zero = document.querySelector('[data-qa="zero-scene"]')
   const mask = document.querySelector('.drop-zero__mask')
+  const head = zero?.querySelector('.mask-art__head')
+  const lens = zero?.querySelector('.mask-art__lens')
   if (!(zero instanceof HTMLElement) || !(mask instanceof SVGElement)) return null
   const maskBox = mask.getBoundingClientRect()
+  const headBox = head instanceof SVGGraphicsElement ? head.getBBox() : null
+  const lensBox = lens instanceof SVGGraphicsElement ? lens.getBBox() : null
   return {
     display: getComputedStyle(zero).display,
     copy: zero.textContent?.replace(/\s+/g, ' ').trim() ?? '',
     maskWidth: Math.round(maskBox.width),
+    headAspect: headBox ? Number((headBox.width / headBox.height).toFixed(3)) : null,
+    lensAspect: lensBox ? Number((lensBox.width / lensBox.height).toFixed(3)) : null,
     scrollLocked: getComputedStyle(document.body).overflow === 'hidden',
+  }
+})
+const maskSystem = await flow.evaluate(() => {
+  const values = (selector) => Array.from(document.querySelectorAll(selector), (node) => node.getAttribute('d') ?? '')
+  const heads = values('[data-qa="mask-artwork"] .mask-art__head')
+  const leftLenses = values('.mask-art__lens--left')
+  const rightLenses = values('.mask-art__lens--right')
+  return {
+    artworkCount: document.querySelectorAll('[data-qa="mask-artwork"]').length,
+    uniqueHeadPaths: new Set(heads).size,
+    leftLensCount: leftLenses.length,
+    rightLensCount: rightLenses.length,
+    uniqueLeftLensPaths: new Set(leftLenses).size,
+    uniqueRightLensPaths: new Set(rightLenses).size,
   }
 })
 await flow.waitForTimeout(2300)
@@ -200,7 +220,7 @@ const backgroundSuitMidTransform = await flow.locator('[data-qa="background-spid
 await flow.evaluate(() => document.querySelector('.proofs')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(260)
 const powerOrigin = await flow.locator('.spider-world').getAttribute('data-origin')
-const maskEyeCount = await flow.locator('.mask-proof__eye').count()
+const maskEyeCount = await flow.locator('.proof-graphic--mask .mask-art__lens').count()
 const powerTabs = await flow.locator('.proofs__power-tab').allTextContents()
 await flow.evaluate(() => document.getElementById('reserve')?.scrollIntoView({ behavior: 'instant' }))
 await flow.waitForTimeout(500)
@@ -218,7 +238,8 @@ await flow.waitForTimeout(500)
 const navVisibleAtFooter = await flow.locator('.drop-nav__buy').isVisible()
 
 if (!nativeTouch || !navReserveVisible) failures.push('390px: mobile navigation or native touch failed')
-if (!zeroScene || zeroScene.display === 'none' || !zeroScene.copy.includes('Spider-Man') || !zeroScene.copy.includes('is here') || zeroScene.maskWidth < 250 || zeroScene.scrollLocked) failures.push('390px: immediate Spider-Man zero scene failed')
+if (!zeroScene || zeroScene.display === 'none' || !zeroScene.copy.includes('Spider-Man') || !zeroScene.copy.includes('is here') || zeroScene.maskWidth < 250 || !zeroScene.headAspect || zeroScene.headAspect < 0.67 || zeroScene.headAspect > 0.75 || !zeroScene.lensAspect || zeroScene.lensAspect > 0.75 || zeroScene.scrollLocked) failures.push('390px: immediate Spider-Man zero scene failed')
+if (maskSystem.artworkCount !== 6 || maskSystem.uniqueHeadPaths !== 1 || maskSystem.leftLensCount !== maskSystem.rightLensCount || maskSystem.leftLensCount < 12 || maskSystem.uniqueLeftLensPaths !== 1 || maskSystem.uniqueRightLensPaths !== 1) failures.push('390px: unified Spider-Man mask geometry failed')
 if (zeroSceneSettled.display !== 'none' || !zeroSceneSettled.navVisible || !zeroSceneSettled.heroVisible) failures.push('390px: zero scene did not hand off cleanly to the hero')
 if (touchReaction !== 'touch' || runnerStartTransform === runnerMidTransform) failures.push('390px: Spider-Man touch or scroll reaction failed')
 if (maskStartTransform === maskTouchTransform) failures.push('390px: Spider-Man mask did not follow touch')
@@ -255,6 +276,7 @@ console.log(JSON.stringify({
     navReserveVisible,
     zeroScene,
     zeroSceneSettled,
+    maskSystem,
     touchReaction,
     maskStartTransform,
     maskTouchTransform,

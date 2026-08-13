@@ -18,7 +18,7 @@ The project borrows interaction principles, never source layouts or proprietary 
 
 - Palette: committed scarlet, warm paper, and deep ink blue. Each has a structural role.
 - Type: Cabinet Grotesk for expressive product statements; Manrope for commerce and reading text; Geist for compact motion telemetry.
-- Shape: white mask eyes, red-and-navy suit silhouettes, radial web geometry, and horizontal Spider-Sense traces.
+- Shape: one original mask system is reused everywhere. It has a human cranial dome, visible temples, cheek and jaw breaks, a pointed chin, large swept white lenses, one dark lens frame, and a continuous facial web. It preserves the core spider-hero reading without copying an official mask path.
 - Media: the supplied 16:9 MP4 appears in the opening transition and hero and is never cropped.
 - Layout: film opening, Spider-Man identity statement, one three-state mask/web/sense sequence, Digitivia motion identity, size reservation, centered Digitivia footer moment.
 - Mobile: 320px minimum, native touch scrolling, safe-area padding, 52px minimum controls, no hover dependency, and a persistent reserve action between hero and checkout.
@@ -28,6 +28,7 @@ The project borrows interaction principles, never source layouts or proprietary 
 ## Motion
 
 - Zero scene: the first paint is a full-screen Spider-Man mask, the supplied face film, a swinging character, and the plain statement "Spider-Man is here." It runs automatically for about two seconds and never locks touch or scroll.
+- Mask continuity: the zero scene, mask proof, Spider-Sense mark, moving character, background suit, and decorative eye pairs all inherit the same lens geometry. No alternate egg-shaped mask or triangular eye asset is allowed.
 - Hero: the supplied face film opens beneath the direct hook "Wear the suit. Be Spider-Man." and then transitions into a numbered mask identity.
 - Character: one continuous curved GSAP motion path swings the foreground Spider-Man through every section. A larger full-suit silhouette moves slowly behind the page, shifts with each web origin, and responds to scroll, hover, and touch. The foreground mask follows pointer or touch position and compatible phones receive a brief haptic pulse on touch.
 - Product sequence: a close-cropped angular mask, live web, and Spider-Sense scenes stack through opacity and planar translation, with a three-state expanding power rail.

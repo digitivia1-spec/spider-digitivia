@@ -180,26 +180,49 @@
   filter: drop-shadow(0 30px 70px oklch(0.08 0.03 254 / 0.72));
 }
 
-.drop-zero__head {
+.drop-zero .mask-art__head {
   fill: oklch(0.62 0.252 27 / 0.72);
   stroke: oklch(0.945 0.024 83 / 0.24);
   stroke-width: 3;
 }
 
-.drop-zero__web {
+.drop-zero .mask-art__planes {
+  fill: oklch(0.25 0.105 254 / 0.16);
+}
+
+.drop-zero .mask-art__web,
+.drop-zero .mask-art__brow-seam {
+  fill: none;
   stroke: var(--drop-ink);
   stroke-width: 5;
   stroke-linecap: round;
+  stroke-linejoin: round;
   opacity: 0.9;
 }
 
-.drop-zero__eyes {
+.drop-zero .mask-art__lenses {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.drop-zero .mask-art__socket {
+  fill: var(--drop-ink);
+  stroke: var(--drop-ink);
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.drop-zero .mask-art__lens {
   fill: var(--drop-paper);
   stroke: var(--drop-ink);
-  stroke-width: 13;
+  stroke-width: 4;
   stroke-linejoin: round;
   filter: drop-shadow(0 0 20px oklch(0.945 0.024 83 / 0.48));
-  transform-origin: center;
+}
+
+.drop-zero .mask-art__lens-facet {
+  fill: oklch(0.945 0.024 83 / 0.2);
+  pointer-events: none;
 }
 
 .drop-zero__sense {
@@ -207,13 +230,6 @@
   stroke-width: 2;
   opacity: 0.52;
   transform-origin: center;
-}
-
-.drop-zero__emblem {
-  fill: var(--drop-ink);
-  stroke: var(--drop-ink);
-  stroke-width: 9;
-  stroke-linecap: round;
 }
 
 .drop-zero__runner {
@@ -1584,11 +1600,23 @@
   color: currentColor;
 }
 
-.spider-eyes path {
-  fill: currentColor;
-  stroke: var(--drop-ink);
-  stroke-width: 14;
+.spider-eyes .mask-art__socket {
+  fill: var(--drop-ink);
+  stroke: currentColor;
+  stroke-width: 8;
   stroke-linejoin: round;
+}
+
+.spider-eyes .mask-art__lens {
+  fill: var(--drop-paper);
+  stroke: var(--drop-ink);
+  stroke-width: 7;
+  stroke-linejoin: round;
+}
+
+.spider-eyes .mask-art__lens-facet {
+  fill: currentColor;
+  opacity: 0.16;
 }
 
 .product-intro__eyes,
@@ -1647,15 +1675,15 @@
   fill: var(--drop-ink);
 }
 
-.proof-graphic--mask .mask-proof__head {
+.proof-graphic--mask .mask-art__head {
   fill: var(--drop-red);
   stroke: var(--drop-paper);
-  stroke-width: 9;
+  stroke-width: 4;
   vector-effect: non-scaling-stroke;
 }
 
-.proof-graphic--mask .mask-proof__planes path {
-  fill: oklch(0.31 0.12 252 / 0.84);
+.proof-graphic--mask .mask-art__planes path {
+  fill: oklch(0.31 0.12 252 / 0.2);
 }
 
 .proof-graphic--mask .mask-proof__sense path {
@@ -1670,35 +1698,37 @@
   stroke-width: 2;
 }
 
-.proof-graphic--mask .mask-proof__web {
+.proof-graphic--mask .mask-art__web,
+.proof-graphic--mask .mask-art__brow-seam {
+  fill: none;
   stroke: var(--drop-ink);
   stroke-width: 4.5;
   stroke-linecap: round;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
-.proof-graphic--mask .mask-proof__socket {
+.proof-graphic--mask .mask-art__web {
+  opacity: 0.88;
+}
+
+.proof-graphic--mask .mask-art__socket {
   fill: var(--drop-ink);
-  stroke: var(--drop-paper);
-  stroke-width: 7;
+  stroke: var(--drop-ink);
+  stroke-width: 4;
   stroke-linejoin: round;
 }
 
-.proof-graphic--mask .mask-proof__eye {
+.proof-graphic--mask .mask-art__lens {
   fill: var(--drop-paper);
   stroke: var(--drop-ink);
-  stroke-width: 6;
+  stroke-width: 3;
   stroke-linejoin: round;
   filter: drop-shadow(0 0 10px oklch(0.945 0.024 83 / 0.34));
 }
 
-.proof-graphic--mask .mask-proof__bridge,
-.proof-graphic--mask .mask-proof__emblem {
-  fill: var(--drop-ink);
-  stroke: var(--drop-ink);
-  stroke-width: 8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.proof-graphic--mask .mask-art__lens-facet {
+  fill: oklch(0.945 0.024 83 / 0.22);
 }
 
 .proof-graphic--web rect {
@@ -1730,17 +1760,39 @@
   transform-origin: center;
 }
 
-.proof-graphic--signal .signal-mask {
-  fill: var(--drop-ink);
+.proof-graphic--signal .mask-art__head {
+  fill: var(--drop-red);
   stroke: var(--drop-paper);
-  stroke-width: 5;
+  stroke-width: 14;
 }
 
-.proof-graphic--signal .signal-eye {
+.proof-graphic--signal .mask-art__planes {
+  fill: oklch(0.24 0.09 254 / 0.72);
+}
+
+.proof-graphic--signal .mask-art__web,
+.proof-graphic--signal .mask-art__brow-seam {
+  fill: none;
+  stroke: var(--drop-ink);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.proof-graphic--signal .mask-art__socket {
+  fill: var(--drop-ink);
+  stroke: var(--drop-paper);
+  stroke-width: 14;
+}
+
+.proof-graphic--signal .mask-art__lens {
   fill: var(--drop-paper);
   stroke: var(--drop-ink);
-  stroke-width: 8;
+  stroke-width: 12;
   stroke-linejoin: round;
+}
+
+.proof-graphic--signal .mask-art__lens-facet {
+  fill: oklch(0.62 0.252 27 / 0.2);
 }
 
 .proofs__visual-card {

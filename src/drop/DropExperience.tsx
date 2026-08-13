@@ -7,6 +7,7 @@ import type { Size } from '../config/site'
 import { useApp } from '../state/store'
 import heroFilm from '../../113354-697718015_medium.mp4?url'
 import heroPoster from '../../src-assets/film/face-02.webp'
+import { SpiderLensPair as SpiderEyes, SpiderMaskArtwork } from './SpiderMaskArt'
 import { SpiderFigure, SpiderWorld } from './SpiderWorld'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -43,35 +44,13 @@ function SpiderStamp() {
 
 function MaskProof() {
   return (
-    <svg className="proof-graphic proof-graphic--mask" viewBox="0 0 600 600" aria-hidden="true">
-      <defs>
-        <clipPath id="mask-proof-clip">
-          <path d="M300 10C162 10 82 119 92 292c10 159 88 282 208 338 120-56 198-179 208-338C518 119 438 10 300 10Z" />
-        </clipPath>
-      </defs>
-      <rect className="mask-proof__backdrop" width="600" height="600" />
+    <svg className="proof-graphic proof-graphic--mask" viewBox="0 0 600 680" aria-hidden="true">
+      <rect className="mask-proof__backdrop" width="600" height="680" />
       <g className="mask-proof__sense" fill="none">
-        <path d="M45 298C45 141 159 23 300 23S555 141 555 298" />
-        <path d="M18 298C18 126 145-5 300-5s282 131 282 303" />
+        <path d="M45 318C45 141 159 23 300 23S555 141 555 318" />
+        <path d="M18 318C18 126 145-5 300-5s282 131 282 323" />
       </g>
-      <path className="mask-proof__head" d="M300 10C162 10 82 119 92 292c10 159 88 282 208 338 120-56 198-179 208-338C518 119 438 10 300 10Z" />
-      <g className="mask-proof__planes" clipPath="url(#mask-proof-clip)">
-        <path d="M82 304 151 190l80 342L88 486Z" />
-        <path d="m518 304-69-114-80 342 143-46Z" />
-      </g>
-      <g className="mask-proof__web" clipPath="url(#mask-proof-clip)" fill="none">
-        <path pathLength="1" d="M300-20v650M300-20C208 94 142 215 92 390M300-20c92 114 158 235 208 410M300-20C243 140 221 331 217 598M300-20c57 160 79 351 83 618" />
-        <path pathLength="1" d="M92 158Q300 292 508 158M81 274Q300 398 519 274M104 404Q300 504 496 404M151 520Q300 579 449 520" />
-      </g>
-      <path className="mask-proof__socket" d="M114 214c49-88 117-126 171-111-17 101-67 185-154 225-20-35-26-76-17-114Z" />
-      <path className="mask-proof__socket" d="M486 214c-49-88-117-126-171-111 17 101 67 185 154 225 20-35 26-76 17-114Z" />
-      <path className="mask-proof__eye" d="M145 222c35-57 77-88 115-96-17 68-53 121-108 157-8-20-11-41-7-61Z" />
-      <path className="mask-proof__eye" d="M455 222c-35-57-77-88-115-96 17 68 53 121 108 157 8-20 11-41 7-61Z" />
-      <path className="mask-proof__bridge" d="M276 105 300 69l24 36-24 83Z" />
-      <g className="mask-proof__emblem">
-        <ellipse cx="300" cy="475" rx="13" ry="27" />
-        <path d="m290 460-41-30m40 47-51-7m54 22-44 32m62-64 41-30m-40 47 51-7m-54 22 44 32" />
-      </g>
+      <SpiderMaskArtwork className="mask-proof__art" />
     </svg>
   )
 }
@@ -108,18 +87,10 @@ function SignalProof() {
         <circle cx="336" cy="468" r="10" />
         <circle cx="512" cy="131" r="10" />
       </g>
-      <path className="signal-mask" d="M244 169c4-50 31-78 56-78s52 28 56 78c4 51-25 103-56 113-31-10-60-62-56-113Z" />
-      <path className="signal-eye" d="M261 163c5-25 18-43 31-51-2 33-11 55-28 69Zm78 0c-5-25-18-43-31-51 2 33 11 55 28 69Z" />
+      <g className="signal-mask-art" transform="translate(230 80) scale(.235)">
+        <SpiderMaskArtwork className="signal-mask-art__inner" />
+      </g>
       <text x="32" y="56">SPIDER-SENSE / MOTION ID 001</text>
-    </svg>
-  )
-}
-
-function SpiderEyes({ className = '' }: { className?: string }) {
-  return (
-    <svg className={`spider-eyes ${className}`} viewBox="0 0 600 260" aria-hidden="true">
-      <path d="M52 40c38 111 103 170 208 190-48-80-106-143-208-190Z" />
-      <path d="M548 40c-38 111-103 170-208 190 48-80 106-143 208-190Z" />
     </svg>
   )
 }
@@ -128,24 +99,12 @@ function ZeroScene() {
   return (
     <div className="drop-zero" data-qa="zero-scene" aria-hidden="true">
       <img className="drop-zero__film" src={heroPoster} alt="" />
-      <svg className="drop-zero__mask" viewBox="0 0 600 900" preserveAspectRatio="xMidYMid meet">
+      <svg className="drop-zero__mask" viewBox="0 0 600 680" preserveAspectRatio="xMidYMid meet">
         <g className="drop-zero__sense" fill="none">
-          <ellipse cx="300" cy="407" rx="237" ry="322" />
-          <ellipse cx="300" cy="407" rx="269" ry="362" />
+          <ellipse cx="300" cy="336" rx="237" ry="302" />
+          <ellipse cx="300" cy="336" rx="269" ry="328" />
         </g>
-        <path className="drop-zero__head" d="M300 58C155 58 88 184 99 387c12 210 89 378 201 447 112-69 189-237 201-447C512 184 445 58 300 58Z" />
-        <g className="drop-zero__web" fill="none">
-          <path pathLength="1" d="M300 58v774M300 58C211 204 151 387 115 618M300 58c89 146 149 329 185 560M300 58C249 251 226 479 225 756M300 58c51 193 74 421 75 698" />
-          <path pathLength="1" d="M118 211Q300 339 482 211M99 363Q300 495 501 363M112 526Q300 641 488 526M159 683Q300 761 441 683" />
-        </g>
-        <g className="drop-zero__eyes">
-          <path d="M128 272c54-92 119-139 171-145-20 115-73 204-164 253-18-33-21-72-7-108Z" />
-          <path d="M472 272c-54-92-119-139-171-145 20 115 73 204 164 253 18-33 21-72 7-108Z" />
-        </g>
-        <g className="drop-zero__emblem">
-          <ellipse cx="300" cy="627" rx="14" ry="31" />
-          <path d="m289 608-58-45m56 66-72-10m75 31-61 48m82-90 58-45m-56 66 72-10m-75 31 61 48" />
-        </g>
+        <SpiderMaskArtwork className="drop-zero__art" />
       </svg>
       <div className="drop-zero__runner">
         <span />
@@ -234,11 +193,11 @@ export function DropExperience() {
         .set('.drop-nav', { yPercent: -110 }, 0)
         .set('.drop-hero__video-wrap', { clipPath: 'inset(0 50% 0 50%)' }, 0)
         .set(intro, { y: 52, opacity: 0 }, 0)
-        .set('.drop-zero__web path', { strokeDasharray: 1, strokeDashoffset: 1 }, 0)
-        .set('.drop-zero__eyes', { scaleY: 0.04, transformOrigin: 'center' }, 0)
+        .set('.drop-zero .mask-art__web path', { strokeDasharray: 1, strokeDashoffset: 1 }, 0)
+        .set('.drop-zero .mask-art__lenses', { scaleY: 0.04, transformOrigin: 'center' }, 0)
         .fromTo('.drop-zero__mask', { scale: 0.93 }, { scale: 1.06, duration: 1.32, ease: 'power2.out' }, 0)
-        .to('.drop-zero__eyes', { scaleY: 1, duration: 0.38 }, 0.06)
-        .to('.drop-zero__web path', { strokeDashoffset: 0, duration: 0.82, stagger: 0.04 }, 0.08)
+        .to('.drop-zero .mask-art__lenses', { scaleY: 1, duration: 0.38 }, 0.06)
+        .to('.drop-zero .mask-art__web path', { strokeDashoffset: 0, duration: 0.82, stagger: 0.04 }, 0.08)
         .fromTo('.drop-zero__sense ellipse', { scale: 0.82, opacity: 0 }, { scale: 1, opacity: 0.72, duration: 0.82, stagger: 0.08, transformOrigin: 'center' }, 0.1)
         .fromTo('.drop-zero__runner', { xPercent: 120, yPercent: -42, rotate: 38 }, { xPercent: -215, yPercent: 178, rotate: -34, duration: 1.38, ease: 'power2.inOut' }, 0.12)
         .to('.drop-zero__meter i', { scaleX: 1, duration: 1.12, ease: 'none' }, 0.08)
@@ -297,8 +256,7 @@ export function DropExperience() {
       gsap.set(visuals.slice(1), { opacity: 0, xPercent: 18, rotate: 4 })
       gsap.set(powerTabs, { flexGrow: 0.7, opacity: 0.42 })
       gsap.set(powerTabs[0], { flexGrow: 2.2, opacity: 1 })
-      gsap.set('.mask-proof__web path', { strokeDasharray: 1, strokeDashoffset: 1 })
-      gsap.set('.mask-proof__eye', { scale: 0.82, transformOrigin: 'center' })
+      gsap.set('.proof-graphic--mask .mask-art__lens', { scale: 0.82, transformOrigin: 'center' })
 
       const proofTimeline = gsap.timeline({
         scrollTrigger: {
@@ -309,8 +267,7 @@ export function DropExperience() {
         },
       })
       proofTimeline
-        .to('.mask-proof__web path', { strokeDashoffset: 0, duration: 0.58, stagger: 0.06 }, 0)
-        .to('.mask-proof__eye', { scale: 1, duration: 0.48, ease: 'expo.out' }, 0.04)
+        .to('.proof-graphic--mask .mask-art__lens', { scale: 1, duration: 0.48, ease: 'expo.out' }, 0.04)
         .to('.proofs__progress-fill', { scaleX: 0.5, duration: 1 }, 0)
         .to(panels[0], { opacity: 0, y: -38, duration: 0.28 }, 0.66)
         .to(visuals[0], { opacity: 0, xPercent: -16, rotate: -3, duration: 0.32 }, 0.64)

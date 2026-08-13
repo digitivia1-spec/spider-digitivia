@@ -76,7 +76,9 @@
   width: 100%;
 }
 
-.spider-world__shadow-suit .spider-figure__head,
+.spider-world__shadow-suit .spider-figure__mask-art .mask-art__head,
+.spider-world__shadow-suit .spider-figure__mask-art .mask-art__planes,
+.spider-world__shadow-suit .spider-figure__mask-art .mask-art__socket,
 .spider-world__shadow-suit .spider-figure__neck,
 .spider-world__shadow-suit .spider-figure__torso,
 .spider-world__shadow-suit .spider-figure__torso-blue,
@@ -88,17 +90,26 @@
   stroke: currentColor;
 }
 
-.spider-world__shadow-suit .spider-figure__eye {
+.spider-world__shadow-suit .spider-figure__mask-art .mask-art__lens {
   fill: oklch(0.945 0.024 83);
   stroke: currentColor;
   stroke-width: 5;
 }
 
+.spider-world__shadow-suit .spider-figure__mask-art .mask-art__lens-facet {
+  fill: oklch(0.62 0.252 27 / 0.34);
+}
+
+.spider-world__shadow-suit .spider-figure__mask-art .mask-art__web,
+.spider-world__shadow-suit .spider-figure__mask-art .mask-art__brow-seam,
 .spider-world__shadow-suit .spider-figure__web,
 .spider-world__shadow-suit .spider-figure__emblem {
+  fill: none;
   stroke: oklch(0.62 0.252 27);
 }
 
+.spider-world[data-tone='red'] .spider-world__shadow-suit .spider-figure__mask-art .mask-art__web,
+.spider-world[data-tone='red'] .spider-world__shadow-suit .spider-figure__mask-art .mask-art__brow-seam,
 .spider-world[data-tone='red'] .spider-world__shadow-suit .spider-figure__web,
 .spider-world[data-tone='red'] .spider-world__shadow-suit .spider-figure__emblem {
   stroke: oklch(0.945 0.024 83);
@@ -288,7 +299,6 @@
   animation: spider-leg-right 1.55s ease-in-out infinite alternate;
 }
 
-.spider-figure__head,
 .spider-figure__neck,
 .spider-figure__torso,
 .spider-figure__arm,
@@ -297,6 +307,48 @@
   stroke: #071633;
   stroke-width: 3;
   stroke-linejoin: round;
+}
+
+.spider-figure__mask-art .mask-art__head {
+  fill: #e51f31;
+  stroke: #071633;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spider-figure__mask-art .mask-art__planes {
+  fill: rgba(16, 47, 104, 0.6);
+}
+
+.spider-figure__mask-art .mask-art__web,
+.spider-figure__mask-art .mask-art__brow-seam {
+  fill: none;
+  stroke: rgba(7, 22, 51, 0.82);
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spider-figure__mask-art .mask-art__socket {
+  fill: #071633;
+  stroke: #071633;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spider-figure__mask-art .mask-art__lens {
+  fill: #fff4e6;
+  stroke: #071633;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spider-figure__mask-art .mask-art__lens-facet {
+  fill: rgba(229, 31, 49, 0.14);
 }
 
 .spider-figure__torso-blue,
@@ -313,13 +365,6 @@
   stroke-width: 3;
 }
 
-.spider-figure__eye {
-  fill: #fff4e6;
-  stroke: #071633;
-  stroke-width: 4;
-  stroke-linejoin: round;
-}
-
 .spider-figure__web {
   stroke: rgba(7, 22, 51, 0.78);
   stroke-width: 1.45;
@@ -332,8 +377,8 @@
   stroke-linecap: round;
 }
 
-.spider-world[data-interaction='hover'] .spider-figure__eye,
-.spider-world[data-interaction='touch'] .spider-figure__eye {
+.spider-world[data-interaction='hover'] .spider-figure__mask-art .mask-art__lens,
+.spider-world[data-interaction='touch'] .spider-figure__mask-art .mask-art__lens {
   fill: #ffffff;
   filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
 }

@@ -3,6 +3,7 @@ import type { RefObject } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
+import { SpiderMaskArtwork } from './SpiderMaskArt'
 import './SpiderWorld.css'
 
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin)
@@ -70,14 +71,12 @@ export function SpiderFigure() {
         <path className="spider-figure__neck" d="M82 90h24l3 20H79Z" />
 
         <g className="spider-figure__mask">
-          <path className="spider-figure__head" d="M68 49C71 19 87 5 98 5c15 0 31 18 32 45 1 25-13 47-32 48-20 0-33-23-30-49Z" />
-          <path className="spider-figure__eye" d="M79 46c3-15 9-24 15-29-1 19-5 31-14 39Z" />
-          <path className="spider-figure__eye" d="M116 45c-3-15-9-23-16-28 2 19 6 31 15 39Z" />
+          <g transform="matrix(.102 0 0 .13 67.4 3)">
+            <SpiderMaskArtwork className="spider-figure__mask-art" />
+          </g>
         </g>
 
         <g className="spider-figure__web" fill="none">
-          <path d="M98 7v87M72 39c17 9 35 9 55 0M69 61c18 10 39 10 59 0M75 81c15 8 30 8 46 0" />
-          <path d="M98 8C82 23 74 40 69 58M98 8c16 15 25 32 30 50M98 8C88 32 84 61 84 91M98 8c10 24 15 53 14 83" />
           <path d="M95 104v58M71 121c17 9 33 9 48 0M69 141c18 10 34 10 47 0" />
         </g>
 
@@ -331,7 +330,7 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       pointerTimer = window.setTimeout(() => { pointer.active = false }, 1200)
       gsap.fromTo(figure, { scale: 0.86 }, { scale: 1, duration: 0.58, ease: 'expo.out', overwrite: 'auto' })
       const reactiveTarget = (event.target as Element | null)?.closest('[data-spider-react]')
-      const reactiveEyes = reactiveTarget?.querySelectorAll('.mask-proof__eye')
+      const reactiveEyes = reactiveTarget?.querySelectorAll('.mask-art__lens')
       if (reactiveEyes?.length) {
         gsap.timeline().to(reactiveEyes, { scale: 1.08, duration: 0.18, ease: 'expo.out' }).to(reactiveEyes, { scale: 1, duration: 0.42, ease: 'expo.out' })
       }
@@ -348,7 +347,7 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       pointer.active = true
       setInteraction('hover')
       gsap.to(figure, { scale: 1.1, duration: 0.38, ease: 'expo.out', overwrite: 'auto' })
-      const reactiveEyes = target.querySelectorAll('.mask-proof__eye')
+      const reactiveEyes = target.querySelectorAll('.mask-art__lens')
       if (reactiveEyes.length) gsap.to(reactiveEyes, { scale: 1.06, duration: 0.38, ease: 'expo.out', overwrite: 'auto' })
     }
 
@@ -357,7 +356,7 @@ export function SpiderWorld({ scopeRef }: SpiderWorldProps) {
       if (!target) return
       pointer.active = false
       gsap.to(figure, { scale: 1, duration: 0.42, ease: 'expo.out', overwrite: 'auto' })
-      const reactiveEyes = target.querySelectorAll('.mask-proof__eye')
+      const reactiveEyes = target.querySelectorAll('.mask-art__lens')
       if (reactiveEyes.length) gsap.to(reactiveEyes, { scale: 1, duration: 0.42, ease: 'expo.out', overwrite: 'auto' })
     }
 
